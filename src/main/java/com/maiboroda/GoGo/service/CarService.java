@@ -1,0 +1,20 @@
+package com.maiboroda.GoGo.service;
+
+import com.maiboroda.GoGo.entity.Car;
+import com.maiboroda.GoGo.repository.CarRepository;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+public class CarService {
+    private final CarRepository carRepository;
+
+    public CarService(CarRepository carRepository) {
+        this.carRepository = carRepository;
+    }
+
+    public List<Car> getAllCars() {
+        return carRepository.findAll();
+    }
+}
