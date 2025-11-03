@@ -1,1 +1,9 @@
-spring.application.name=GoGo
+spring:
+  application:
+    name: GoGo
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/Car-sharing
+    username: admin
+    password: 12345
+
