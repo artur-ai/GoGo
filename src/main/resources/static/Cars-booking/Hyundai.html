@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Бронювання авто</title>
+  <link rel="stylesheet" href="booking.css" />
+  <style>
+    .success-message {
+      display: none;
+      margin-top: 20px;
+      color: green;
+      font-weight: bold;
+      font-size: 18px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Бронювання Hyundai H-1 2019</h1>
+
+  <form id="bookingForm" action="submit-booking.php" method="POST" class="booking-form">
+    <label for="name">Ім'я:</label>
+    <input type="text" id="name" name="name" required />
+
+    <label for="phone">Телефон:</label>
+    <input type="tel" id="phone" name="phone" required />
+
+    <label for="email">Email:</label>
+    <input type="email" id="email" name="email" required />
+
+    <label for="date">Дата бронювання:</label>
+    <input type="date" id="date" name="date" required />
+
+    <label for="time">Час початку:</label>
+    <input type="time" id="time" name="time" required />
+
+    <label for="duration">Тривалість (годин):</label>
+    <input type="number" id="duration" name="duration" min="1" required />
+
+    <input type="hidden" name="car" value="Hyundai H-1 2019" />
+
+    <button type="submit">Забронювати</button>
+  </form>
+  <div class="success-message" id="successMessage">Бронювання успішне!</div>
+  <script>
+    document.getElementById("bookingForm").addEventListener("submit", function(e) {
+      e.preventDefault(); 
+      document.getElementById("successMessage").style.display = "block";
+      this.reset(); 
+    });
+  </script>
+</body>
+</html>
