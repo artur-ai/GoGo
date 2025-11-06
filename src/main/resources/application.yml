@@ -4,8 +4,8 @@ spring:
 
   datasource:
     url: jdbc:postgresql://localhost:5432/Car-sharing
-    username: admin
-    password: 12345
+    username: postgres
+    password: postgres
 
   jpa:
     hibernate:

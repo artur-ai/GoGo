@@ -10,10 +10,10 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    permissions:
-      contents: read
-      packages: write
-    group: docker
+    services:
+      docker:
+        image: docker:dind
+        options: --privileged --network host
 
     steps:
       - name: Checkout Repository
@@ -34,14 +34,8 @@ jobs:
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
           restore-keys: ${{ runner.os }}-gradle-
 
-
-      - name: Login to Docker Hub (Optional)
-        uses: docker/login-action@v3
-        if: always()
-        with:
-          registry: ghcr.io
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Set Testcontainers Docker Host
+        run: echo "DOCKER_HOST=tcp://docker:2375" >> $GITHUB_ENV
 
       - name: Build and Test with Gradle
         uses: gradle/actions/setup-gradle@v3
