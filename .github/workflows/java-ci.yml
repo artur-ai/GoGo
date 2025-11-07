@@ -10,11 +10,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    services:
-      docker:
-        image: docker:dind
-        options: --privileged --network host
-
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -25,17 +20,8 @@ jobs:
           java-version: '23'
           distribution: 'temurin'
 
-      - name: Setup Gradle Cache
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-          restore-keys: ${{ runner.os }}-gradle-
-
-      - name: Set Testcontainers Docker Host
-        run: echo "DOCKER_HOST=tcp://docker:2375" >> $GITHUB_ENV
+      - name: Start Docker for Testcontainers
+        run: docker info
 
       - name: Build and Test with Gradle
         uses: gradle/actions/setup-gradle@v3
