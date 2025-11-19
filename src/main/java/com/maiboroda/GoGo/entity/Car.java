@@ -7,10 +7,15 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@NamedQuery(
+        name = "Car.findCarByTagId",
+        query = "SELECT c FROM Car c JOIN c.tags t WHERE t.id IN :tagId GROUP BY c.id HAVING COUNT(t.id) = :tagCount"
+)
 @Entity
 @Table(name = "cars")
 public class Car {
@@ -48,5 +53,13 @@ public class Car {
 
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
+
+    @ManyToMany
+    @JoinTable(
+            name = "car-tags",
+            joinColumns = @JoinColumn(name = "car_id"),
+            inverseJoinColumns = @JoinColumn(name = "tag_id")
+    )
+    private List<Tag> tags;
 
 }
