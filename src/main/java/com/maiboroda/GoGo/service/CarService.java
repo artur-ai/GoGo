@@ -20,4 +20,8 @@ public class CarService {
         logger.log(Level.INFO, "Successfully add all cars from repositiry", cars.size());
         return cars;
     }
+
+    public List<Car> getThreeRandomCars(int count) {
+        return carRepository.getThreeRandomCars(count);
+    }
 }
