@@ -2,6 +2,7 @@ package com.maiboroda.GoGo.service;
 
 import com.maiboroda.GoGo.AbstractIntegrationTest;
 import com.maiboroda.GoGo.entity.Car;
+import com.maiboroda.GoGo.entity.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -36,5 +37,21 @@ public class CarServiceITest extends AbstractIntegrationTest {
         assertEquals("Petrol/Gas", firstCar.getFuelType());
         assertEquals("1.2L", firstCar.getEngine());
         assertEquals("https://res.cloudinary.com/de6b0q56z/image/upload/v1762162805/skoda-fabia_nvxaiq.png", firstCar.getImageUrl());
+    }
+
+    @Test
+    void testFindCarByTags() {
+        List<Long> tags = List.of(1L, 3L);
+        List<Car> foundCars = carService.findCarByTags(tags);
+
+        assertEquals(6, foundCars.size());
+    }
+
+    @Test
+    void testFindCarByEmptyTags() {
+        List<Long> tags = List.of();
+        List<Car> foundCar = carService.findCarByTags(tags);
+
+        assertEquals(12, foundCar.size());
     }
 }

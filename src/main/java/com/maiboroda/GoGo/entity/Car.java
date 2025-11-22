@@ -56,7 +56,7 @@ public class Car {
 
     @ManyToMany
     @JoinTable(
-            name = "car-tags",
+            name = "car_tags",
             joinColumns = @JoinColumn(name = "car_id"),
             inverseJoinColumns = @JoinColumn(name = "tag_id")
     )

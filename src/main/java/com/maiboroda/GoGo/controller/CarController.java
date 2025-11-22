@@ -1,11 +1,8 @@
 package com.maiboroda.GoGo.controller;
 
-import com.maiboroda.GoGo.dto.CarRequestDto;
 import com.maiboroda.GoGo.entity.Car;
 import com.maiboroda.GoGo.service.CarService;
-import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,20 +16,14 @@ public class CarController {
 
     @GetMapping
     public ResponseEntity<List<Car>> gelAllCars(
-            @RequestParam(required = false) List<Long> tagId) {
+            @RequestParam(required = false) List<Long> tagIds) {
         List<Car> cars;
 
-        if (tagId != null && !tagId.isEmpty()) {
-            cars = carService.findCarByTags(tagId);
+        if (tagIds != null && !tagIds.isEmpty()) {
+            cars = carService.findCarByTags(tagIds);
         } else {
             cars = carService.getAllCars();
         }
         return ResponseEntity.ok(cars);
-    }
-
-    @PostMapping
-    public ResponseEntity<Car> createCar(@RequestBody @Valid CarRequestDto carDto) {
-        Car createdCar = carService.createCar(carDto);
-        return new ResponseEntity<>(createdCar, HttpStatus.CREATED);
     }
 }

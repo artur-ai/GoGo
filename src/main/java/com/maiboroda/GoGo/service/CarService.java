@@ -1,13 +1,10 @@
 package com.maiboroda.GoGo.service;
 
-import com.maiboroda.GoGo.dto.CarRequestDto;
 import com.maiboroda.GoGo.entity.Car;
-import com.maiboroda.GoGo.entity.Tag;
 import com.maiboroda.GoGo.repository.CarRepository;
 import com.maiboroda.GoGo.repository.TagRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.logging.Level;
@@ -37,22 +34,5 @@ public class CarService {
         List<Car> filteredCars = carRepository.findCarByTagId(tagId, tagCount);
         logger.log(Level.INFO, "Successfully filtered" + filteredCars.size() + "cars");
         return filteredCars;
-    }
-
-    @Transactional
-    public Car createCar(CarRequestDto carDto) {
-        Car car = new Car();
-        car.setBrand(carDto.getBrand());
-        car.setModel(carDto.getModel());
-        car.setEngine(carDto.getEngine());
-        car.setFuelType(carDto.getFuelType());
-        car.setYear(carDto.getYear());
-        car.setPricePerDay(carDto.getPricePerDay());
-
-        if (carDto.getTagIds() != null && !carDto.getTagIds().isEmpty()) {
-            List<Tag> tags = tagRepository.findAllById(carDto.getTagIds());
-            car.setTags(tags);
-        }
-        return carRepository.save(car);
     }
 }

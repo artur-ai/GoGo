@@ -397,4 +397,105 @@ footer {
   .rules {
     margin-top: -40px;
   }
+
+  /* Секція фільтрів */
+  .car-filters {
+      max-width: 1200px;
+      margin: 40px auto;
+      padding: 30px;
+      background: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .car-filters h2 {
+      font-size: 24px;
+      margin-bottom: 20px;
+      color: #333;
+  }
+
+  /* Сітка фільтрів */
+  .filters-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 20px;
+  }
+
+  /* Стиль для кожного тега-фільтра */
+  .filter-tag {
+      position: relative;
+      display: inline-block;
+      cursor: pointer;
+  }
+
+  .filter-tag input[type="checkbox"] {
+      position: absolute;
+      opacity: 0;
+      cursor: pointer;
+  }
+
+  .filter-tag .tag-label {
+      display: inline-block;
+      padding: 10px 20px;
+      background: #f0f0f0;
+      border: 2px solid #e0e0e0;
+      border-radius: 25px;
+      font-size: 14px;
+      font-weight: 500;
+      color: #555;
+      transition: all 0.3s ease;
+      user-select: none;
+  }
+
+  .filter-tag:hover .tag-label {
+      background: #e8e8e8;
+      border-color: #d0d0d0;
+  }
+
+  .filter-tag input[type="checkbox"]:checked + .tag-label {
+      background: #4CAF50;
+      border-color: #4CAF50;
+      color: white;
+      transform: scale(1.05);
+  }
+
+  #apply-filters-button {
+      padding: 12px 30px;
+      font-size: 16px;
+      margin-top: 10px;
+      margin-bottom: 100px
+      font-weight: 600;
+      background: #333;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+  }
+
+  #apply-filters-button:hover {
+      background: #4CAF50;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+  }
+
+  #apply-filters-button:active {
+      transform: translateY(0);
+  }
+
+  @media (max-width: 768px) {
+      .car-filters {
+          padding: 20px;
+      }
+
+      .filters-grid {
+          gap: 8px;
+      }
+
+      .filter-tag .tag-label {
+          padding: 8px 16px;
+          font-size: 13px;
+      }
+  }
 }

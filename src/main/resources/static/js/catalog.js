@@ -12,13 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function renderCarCard(car) {
-        // Використовуємо тимчасову заглушку, оскільки логіка bookingUrl є складною
         const bookingUrl = `delivery.html?carId=${car.id}`;
-
-        // Додаємо відображення тегів до картки
-        const tagsHtml = car.tags && car.tags.length > 0
-            ? car.tags.map(tag => `<span class="tag-badge">${tag.name}</span>`).join('')
-            : '';
 
         return `
             <div class="car-card">
@@ -26,7 +20,6 @@ document.addEventListener('DOMContentLoaded', () => {
               <div class="car-info">
                 <h2>${car.brand} ${car.model} ${car.year}</h2>
                 <p>${car.engine} • ${car.fuelType}</p>
-                <div class="car-tags-list">${tagsHtml}</div>
                 <ul>
                   <li>Хвилина: ${car.pricePerMinute} грн</li>
                   <li>Доба: ${car.pricePerDay} грн</li>
@@ -37,9 +30,6 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
         `;
     }
-
-    // --- ФУНКЦІЯ 4: Завантаження та відображення автомобілів (ОНОВЛЕНО) ---
-    // Приймає URL для фільтрації
     function loadCars(url = '/api/cars') {
         if (!container) return;
 
@@ -53,15 +43,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 return response.json();
             })
             .then(cars => {
-                container.innerHTML = '';
+                console.log('Отримано машини:', cars);
+
                 if (cars.length === 0) {
                     container.innerHTML = `<h2 style="text-align: center;">Автомобілів за вибраними фільтрами не знайдено.</h2>`;
                     return;
                 }
 
-                cars.forEach(car => {
-                    container.innerHTML += renderCarCard(car);
-                });
+                const cardsHtml = cars.map(car => renderCarCard(car)).join('');
+                container.innerHTML = cardsHtml;
             })
             .catch(error => {
                 console.error('Помилка завантаження даних:', error);
@@ -69,24 +59,21 @@ document.addEventListener('DOMContentLoaded', () => {
             });
     }
 
-    // --- ФУНКЦІЯ 5: Обробка фільтрації ---
     function filterCars() {
-        // Збираємо ID усіх вибраних чекбоксів
         const selectedTagIds = Array.from(document.querySelectorAll('.tag-filter-checkbox:checked'))
                                     .map(checkbox => checkbox.value);
 
         let url = '/api/cars';
 
         if (selectedTagIds.length > 0) {
-            // Формуємо рядок параметрів запиту: ?tagIds=1,5,8
-            const tagQuery = selectedTagIds.join(',');
-            url = `/api/cars?tagIds=${tagQuery}`;
+            const params = selectedTagIds.map(id => `tagIds=${id}`).join('&');
+            url = `/api/cars?${params}`;
         }
 
+        console.log('Запит фільтрації:', url);
         loadCars(url);
     }
 
-    // --- ФУНКЦІЯ 6: Завантаження та відображення тегів з API ---
     async function loadAndDisplayTags() {
         if (!tagFiltersContainer) return;
         tagFiltersContainer.innerHTML = '<p>Завантаження фільтрів...</p>';
@@ -96,20 +83,20 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!response.ok) throw new Error('Failed to fetch tags');
 
             const tags = await response.json();
+            console.log('Отримано теги:', tags);
 
-            tagFiltersContainer.innerHTML = ''; // Очищаємо контейнер
+            tagFiltersContainer.innerHTML = '';
 
             tags.forEach(tag => {
-                const tagElement = document.createElement('div');
-                tagElement.className = 'filter-item';
+                const tagElement = document.createElement('label');
+                tagElement.className = 'filter-tag';
                 tagElement.innerHTML = `
                     <input type="checkbox" id="tag-${tag.id}" value="${tag.id}" class="tag-filter-checkbox">
-                    <label for="tag-${tag.id}">${tag.name}</label>
+                    <span class="tag-label">${tag.name}</span>
                 `;
                 tagFiltersContainer.appendChild(tagElement);
             });
 
-            // Додаємо слухача подій до кнопки "Застосувати"
             if (applyFiltersButton) {
                 applyFiltersButton.addEventListener('click', filterCars);
             }
@@ -119,9 +106,6 @@ document.addEventListener('DOMContentLoaded', () => {
             tagFiltersContainer.innerHTML = '<p>Не вдалося завантажити фільтри.</p>';
         }
     }
-
-
-    // --- Запуск при завантаженні сторінки ---
-    loadAndDisplayTags(); // Спочатку завантажуємо фільтри
-    loadCars();           // Завантажуємо всі авто (перший раз)
+    loadAndDisplayTags();
+    loadCars();
 });

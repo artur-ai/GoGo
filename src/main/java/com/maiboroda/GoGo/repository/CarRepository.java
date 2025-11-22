@@ -12,6 +12,6 @@ import java.util.List;
 public interface CarRepository extends JpaRepository<Car, Long> {
     List<Car> findCarByTagId(
             @Param("tagId") List<Long> tagId,
-            @Param("tagCount") Long tegCount
+            @Param("tagCount") Long tagCount
     );
 }
