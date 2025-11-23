@@ -37,4 +37,12 @@ public class CarServiceITest extends AbstractIntegrationTest {
         assertEquals("1.2L", firstCar.getEngine());
         assertEquals("https://res.cloudinary.com/de6b0q56z/image/upload/v1762162805/skoda-fabia_nvxaiq.png", firstCar.getImageUrl());
     }
+
+    @Test
+    void testGetThreeRandomCar() {
+        List<Car> cars = carService.getThreeRandomCars(3);
+
+        assertFalse(cars.isEmpty());
+        assertEquals(3, cars.size());
+    }
 }

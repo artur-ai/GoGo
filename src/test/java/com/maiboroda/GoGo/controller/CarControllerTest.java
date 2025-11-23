@@ -43,4 +43,24 @@ public class CarControllerTest extends AbstractIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[*].brand", containsInAnyOrder("Skoda", "Ravon", "Volkswagen", "Ford","Skoda","Volkswagen", "Nissan", "Audi", "Skoda", "BMW", "Toyota", "Hyundai")));
     }
+
+    @Test
+    void testReturnThreeRandomCars() throws Exception {
+        mockMvc.perform(get("/api/cars/random")
+                        .param("count", "3")
+                )
+                .andExpect(status().isOk())
+                .andExpect(content().contentType("application/json"))
+                .andExpect(jsonPath("$", hasSize(3)));
+    }
+
+    @Test
+    void testReturnZeroRandomCar() throws Exception {
+        mockMvc.perform(get("/api/cars/random")
+                .param("count", "0")
+        )
+                .andExpect(status().isOk())
+                .andExpect(content().contentType("application/json"))
+                .andExpect(jsonPath("$", hasSize(0)));
+    }
 }
