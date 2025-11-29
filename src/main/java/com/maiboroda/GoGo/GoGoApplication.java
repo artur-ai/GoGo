@@ -7,8 +7,6 @@ import java.util.TimeZone;
 
 @SpringBootApplication
 public class GoGoApplication {
-
-
     public static void main(String[] args) {
         TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
         System.setProperty("DB_USERNAME", "postgres");

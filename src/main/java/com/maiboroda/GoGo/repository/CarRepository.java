@@ -12,5 +12,5 @@ import java.util.List;
 public interface CarRepository extends JpaRepository<Car, Long> {
 
     @Query(value = "SELECT * FROM cars ORDER BY RANDOM() LIMIT :count", nativeQuery = true)
-    List<Car> getThreeRandomCars(@Param("count") int count);
+    List<Car> getRandomCars(@Param("count") int count);
 }

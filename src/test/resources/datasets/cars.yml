@@ -1,0 +1,144 @@
+cars:
+  - id: 1
+    brand: "Skoda"
+    model: "Fabia"
+    year: 2013
+    fuel_type: "Petrol/Gas"
+    engine: "1.2L"
+    price_per_minute: 2.2
+    price_per_day: 600
+    insurance_price: 0.96
+    image_url: "https://res.cloudinary.com/de6b0q56z/image/upload/v1762162805/skoda-fabia_nvxaiq.png"
+    created_at: "[NOW]"
+
+  - id: 2
+    brand: "Ravon"
+    model: "R2"
+    year: 2016
+    fuel_type: "Petrol"
+    engine: "1.2L"
+    price_per_minute: 1.6
+    price_per_day: 600
+    insurance_price: 0.76
+    image_url: "https://res.cloudinary.com/de6b0q56z/image/upload/v1762162805/ravon_htgvqy.png"
+    created_at: "[NOW]"
+
+  - id: 3
+    brand: "Volkswagen"
+    model: "Polo"
+    year: 2012
+    fuel_type: "Petrol/Gas"
+    engine: "1.6L"
+    price_per_minute: 2.6
+    price_per_day: 900
+    insurance_price: 1.04
+    image_url: "https://res.cloudinary.com/de6b0q56z/image/upload/v1762162804/volkswagen-polo_rvb3fj.png"
+    created_at: "[NOW]"
+
+  - id: 4
+    brand: "Ford"
+    model: "Fiesta"
+    year: 2018
+    fuel_type: "Petrol"
+    engine: "1.6L"
+    price_per_minute: 2.6
+    price_per_day: 900
+    insurance_price: 1.04
+    image_url: "https://res.cloudinary.com/de6b0q56z/image/upload/v1762162804/ford-fiesta_ek4ijy.png"
+    created_at: "[NOW]"
+
+  - id: 5
+    brand: "Volkswagen"
+    model: "Jetta"
+    year: 2015
+    fuel_type: "Diesel"
+    engine: "2.0L"
+    price_per_minute: 3.7
+    price_per_day: 1250
+    insurance_price: 1.4
+    image_url: "https://res.cloudinary.com/de6b0q56z/image/upload/v1762162804/volkswagen-jetta_ffmjtb.png"
+    created_at: "[NOW]"
+
+  - id: 6
+    brand: "Skoda"
+    model: "Rapid"
+    year: 2018
+    fuel_type: "Petrol"
+    engine: "1.6L"
+    price_per_minute: 3.7
+    price_per_day: 1250
+    insurance_price: 1.4
+    image_url: "https://res.cloudinary.com/de6b0q56z/image/upload/v1762162805/skoda-rapid_xeo513.png"
+    created_at: "[NOW]"
+
+  - id: 7
+    brand: "Nissan"
+    model: "Leaf"
+    year: 2014
+    fuel_type: "Electro"
+    engine: "EV Motor"
+    price_per_minute: 3.7
+    price_per_day: 2500
+    insurance_price: 1.48
+    image_url: "https://res.cloudinary.com/de6b0q56z/image/upload/v1762162805/nissan-leaf_iu1ryc.png"
+    created_at: "[NOW]"
+
+  - id: 8
+    brand: "Skoda"
+    model: "Octavia"
+    year: 2020
+    fuel_type: "Petrol"
+    engine: "2.0L"
+    price_per_minute: 6.1
+    price_per_day: 2600
+    insurance_price: 2.44
+    image_url: "https://res.cloudinary.com/de6b0q56z/image/upload/v1762162806/skoda-octavia_ngxaz4.png"
+    created_at: "[NOW]"
+
+  - id: 9
+    brand: "Audi"
+    model: "A4"
+    year: 2017
+    fuel_type: "Petrol"
+    engine: "2.0L"
+    price_per_minute: 6.1
+    price_per_day: 2600
+    insurance_price: 2.44
+    image_url: "https://res.cloudinary.com/de6b0q56z/image/upload/v1762162804/audi-a4_k7dxqp.png"
+    created_at: "[NOW]"
+
+  - id: 10
+    brand: "BMW"
+    model: "3 Series"
+    year: 2015
+    fuel_type: "Petrol"
+    engine: "2.0L"
+    price_per_minute: 6.1
+    price_per_day: 2600
+    insurance_price: 2.44
+    image_url: "https://res.cloudinary.com/de6b0q56z/image/upload/v1762162804/bmw_gis4oh.png"
+    created_at: "[NOW]"
+
+  - id: 11
+    brand: "Toyota"
+    model: "Camry"
+    year: 2019
+    fuel_type: "Petrol"
+    engine: "2.5L"
+    price_per_minute: 6.1
+    price_per_day: 2600
+    insurance_price: 2.44
+    image_url: "https://res.cloudinary.com/de6b0q56z/image/upload/v1762162805/toyota-camry_u2jscc.png"
+    created_at: "[NOW]"
+
+  - id: 12
+    brand: "Hyundai"
+    model: "H-1"
+    year: 2019
+    fuel_type: "Diesel"
+    engine: "2.5L"
+    price_per_minute: 5.5
+    price_per_day: 2800
+    insurance_price: 2.44
+    image_url: "https://res.cloudinary.com/de6b0q56z/image/upload/v1762162804/hundai-bus_gn2cht.png"
+    created_at: "[NOW]"

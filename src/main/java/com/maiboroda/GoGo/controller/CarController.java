@@ -1,12 +1,11 @@
 package com.maiboroda.GoGo.controller;
 
 import com.maiboroda.GoGo.entity.Car;
-import com.maiboroda.GoGo.service.CarService;
+import com.maiboroda.GoGo.service.CarServiceImpl;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -15,7 +14,7 @@ import java.util.List;
 @RequestMapping("/api/cars")
 @AllArgsConstructor
 public class CarController {
-    public final CarService carService;
+    public final CarServiceImpl carService;
 
     @GetMapping
     public ResponseEntity<List<Car>> gelAllCars() {
@@ -24,8 +23,12 @@ public class CarController {
     }
 
     @GetMapping("/random")
-    public ResponseEntity<List<Car>> getThreeRandomCar(@RequestParam(defaultValue = "3") int count) {
-        List<Car> cars = carService.getThreeRandomCars(count);
-        return ResponseEntity.ok(cars);
+    public ResponseEntity<List<Car>> getRandomCars() {
+        try {
+            List<Car> cars = carService.getRandomCars();
+            return ResponseEntity.ok(cars);
+        } catch (IllegalArgumentException exception) {
+            return ResponseEntity.badRequest().body(List.of());
+        }
     }
 }

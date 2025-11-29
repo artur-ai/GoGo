@@ -14,3 +14,7 @@ spring:
   flyway:
     enabled: true
     baseline-on-migrate: true
+
+gogo:
+  settings:
+    random-number: 3
