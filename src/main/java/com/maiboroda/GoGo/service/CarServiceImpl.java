@@ -32,8 +32,11 @@ public class CarServiceImpl implements CarService {
 
     @Override
     public List<Car> getRandomCars() {
+        if (randomNumber < 0) {
+            throw new IllegalArgumentException("Invalid Number, it must be positive");
+        }
         List<Car> cars = carRepository.getRandomCars(randomNumber);
-        if (randomNumber > cars.size() || randomNumber < 0) {
+        if (randomNumber > cars.size()) {
             throw new IllegalArgumentException("Invalid Number, it must be from 1 to " + cars.size());
         }
         logger.log(Level.INFO, "Successfully add" + cars.size() + "random cars");

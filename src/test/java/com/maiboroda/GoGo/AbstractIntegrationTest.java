@@ -12,7 +12,11 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 @SpringBootTest
 @Testcontainers
 @DBRider
-@DBUnit(caseSensitiveTableNames = true)
+@DBUnit(
+        caseSensitiveTableNames = true,
+        cacheConnection = false,
+        leakHunter = true
+)
 public abstract class AbstractIntegrationTest {
 
     static {
@@ -24,13 +28,12 @@ public abstract class AbstractIntegrationTest {
     static PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>("postgres:15")
             .withDatabaseName("testdb")
             .withUsername("test")
-            .withPassword("test");
+            .withPassword("test")
+            .withReuse(false);
 
     @DynamicPropertySource
     static void configurateProperties(DynamicPropertyRegistry registry) {
-        String jdbcUrl = postgreSQLContainer.getJdbcUrl();
-
-        registry.add("spring.datasource.url", () -> jdbcUrl);
+        registry.add("spring.datasource.url", postgreSQLContainer::getJdbcUrl);
         registry.add("spring.datasource.username", postgreSQLContainer::getUsername);
         registry.add("spring.datasource.password", postgreSQLContainer::getPassword);
 
@@ -39,5 +42,8 @@ public abstract class AbstractIntegrationTest {
         registry.add("spring.flyway.clean-disabled", () -> false);
 
         registry.add("spring.jpa.hibernate.ddl-auto", () -> "validate");
+
+        registry.add("spring.datasource.hikari.maximum-pool-size", () -> 10);
+        registry.add("spring.datasource.hikari.minimum-idle", () -> 2);
     }
 }
