@@ -3,19 +3,25 @@ package com.maiboroda.GoGo.controller;
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.junit5.api.DBRider;
 import com.maiboroda.GoGo.AbstractIntegrationTest;
+import com.maiboroda.GoGo.dto.CarRequestDto;
 import com.maiboroda.GoGo.service.CarService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.math.BigDecimal;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertNotEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -30,6 +36,15 @@ public class CarControllerTest extends AbstractIntegrationTest {
 
     @Autowired
     private CarService carService;
+
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    private CarRequestDto createVaidCarRequestDto() {
+        return new CarRequestDto("Dodge", "Dart", 2014, "Petrol", "2.4",
+                new BigDecimal("15.50"), new BigDecimal("1200.00"), new BigDecimal("10.00"),
+                "https://test.com/dodge.png");
+    }
 
     @Test
     void testReturnAllCars() throws Exception {
@@ -150,4 +165,56 @@ public class CarControllerTest extends AbstractIntegrationTest {
         mockMvc.perform(get("/api/cars/random"))
                 .andExpect(status().isBadRequest());
     }
+
+    @Test
+    @DataSet(value = "datasets/cars.yml", cleanBefore = true)
+    void testAddValidCarReturen201Created() throws Exception {
+        CarRequestDto requestDto = createVaidCarRequestDto();
+
+        mockMvc.perform(post("/api/cars/add")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(requestDto)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.id", notNullValue()))
+                .andExpect(jsonPath("$.brand", is("Dodge")))
+                .andExpect(jsonPath("$.pricePerDay", is(1200.00)));
+    }
+
+    @Test
+    void testAddCarInvalidYear_ShouldReturn400BadRequest() throws Exception {
+        CarRequestDto requestDto = createVaidCarRequestDto();
+        requestDto.setYear(3000);
+
+        mockMvc.perform(post("/api/cars/add")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(requestDto)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message", is("Validation failed")))
+                .andExpect(jsonPath("$.errors.year", is("Year must be before 2026")));
+    }
+
+    @Test
+    void testAddCarMissingBrand_ShouldReturn400BadRequest() throws Exception {
+        CarRequestDto requestDto = createVaidCarRequestDto();
+        requestDto.setBrand("");
+
+        mockMvc.perform(post("/api/cars/add")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(requestDto)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errors.brand", is("Brand can not be empty")));
+    }
+
+    @Test
+    void testAddCarNonPositivePrice_ShouldReturn400BadRequest() throws Exception {
+        CarRequestDto requestDto = createVaidCarRequestDto();
+        requestDto.setPricePerMinute(BigDecimal.ZERO);
+
+        mockMvc.perform(post("/api/cars/add")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(requestDto)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errors.pricePerMinute", is("Price per minute must be positive")));
+    }
 }
+

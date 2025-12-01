@@ -3,6 +3,8 @@ package com.maiboroda.GoGo.service;
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.junit5.api.DBRider;
 import com.maiboroda.GoGo.AbstractIntegrationTest;
+import com.maiboroda.GoGo.dto.CarRequestDto;
+import com.maiboroda.GoGo.dto.CarResponseDto;
 import com.maiboroda.GoGo.entity.Car;
 import com.maiboroda.GoGo.repository.CarRepository;
 import org.junit.jupiter.api.Test;
@@ -10,10 +12,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.*;
 
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -26,6 +29,14 @@ public class CarServiceITest extends AbstractIntegrationTest {
 
     @Autowired
     private CarRepository carRepository;
+
+    private CarRequestDto createValidCarRequestDto() {
+        return new CarRequestDto(
+                "Dodge", "Dart", 2014, "Petrol", "2.4L",
+                new BigDecimal("15.50"), new BigDecimal("1200.00"), new BigDecimal("10.00"),
+                "https://test.com/dodge_dart.png"
+        );
+    }
 
     @Test
     void testGetAllCars_ReturnCorrectSize() {
@@ -98,6 +109,39 @@ public class CarServiceITest extends AbstractIntegrationTest {
         List<Car> repositoryCars = carRepository.getRandomCars(3);
 
         assertEquals(repositoryCars.size(), serviceCars.size());
+    }
+
+    @Test
+    @DataSet(value = "datasets/cars.yml", cleanBefore = true, cleanAfter = true)
+    void testAddCarReturnCorrectRespondeDto() {
+        CarRequestDto requestDto = createValidCarRequestDto();
+        CarResponseDto responseDto = carService.addCar(requestDto);
+
+        assertNotNull(responseDto, "Response DTO should not be null");
+        assertNotNull(responseDto.getId(), "Generated ID should not be null");
+        assertEquals(requestDto.getBrand(), responseDto.getBrand());
+        assertEquals(requestDto.getModel(), responseDto.getModel());
+    }
+
+    @Test
+    @DataSet(value = "datasets/cars.yml", cleanBefore = true, cleanAfter = true)
+    void testAddCarReturnCorrectCount() {
+        long initialCount = carRepository.count();
+
+        CarRequestDto requestDto = createValidCarRequestDto();
+        CarResponseDto responseDto = carService.addCar(requestDto);
+
+        long newCount = carRepository.count();
+        assertEquals(initialCount + 1, newCount, "Car count in DB should increase by 1");
+
+        Optional<Car> savedCarOptional = carRepository.findById(responseDto.getId());
+
+        assertThat(savedCarOptional).isPresent();
+        Car savedCar = savedCarOptional.get();
+
+        assertEquals(requestDto.getEngine(), savedCar.getEngine());
+        assertEquals(requestDto.getFuelType(), savedCar.getFuelType());
+        assertEquals(requestDto.getYear(), savedCar.getYear());
     }
 
 

@@ -1,12 +1,15 @@
 package com.maiboroda.GoGo.controller;
 
+import com.maiboroda.GoGo.dto.CarRequestDto;
+import com.maiboroda.GoGo.dto.CarResponseDto;
 import com.maiboroda.GoGo.entity.Car;
 import com.maiboroda.GoGo.service.CarServiceImpl;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -30,5 +33,11 @@ public class CarController {
         } catch (IllegalArgumentException exception) {
             return ResponseEntity.badRequest().body(List.of());
         }
+    }
+
+    @PostMapping("/add")
+    public ResponseEntity<CarResponseDto> addCar(@Valid @RequestBody CarRequestDto carRequestDto) {
+        CarResponseDto responseDto = carService.addCar(carRequestDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
     }
 }
