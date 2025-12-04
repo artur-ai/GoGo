@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '3.4.0'
     id 'io.spring.dependency-management' version '1.1.7'
+    id 'jacoco'  // <-- Додай JaCoCo plugin
 }
 
 group = 'com.maiboroda'
@@ -11,6 +12,12 @@ java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(23)
     }
+}
+
+ext {
+    testcontainersVersion = '1.19.3'
+    databaseRiderVersion = '1.43.0'
+    mapstructVersion = '1.5.5.Final'
 }
 
 repositories {
@@ -27,21 +34,52 @@ dependencies {
     implementation 'org.flywaydb:flyway-core'
     implementation 'org.flywaydb:flyway-database-postgresql'
 
+    implementation "org.mapstruct:mapstruct:${mapstructVersion}"
+    annotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
+    annotationProcessor 'org.projectlombok:lombok-mapstruct-binding:0.2.0'
+
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
+
+    implementation 'org.slf4j:slf4j-api'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
-    testImplementation 'org.testcontainers:testcontainers:1.19.3'
-    testImplementation 'org.testcontainers:postgresql:1.19.3'
-    testImplementation 'org.testcontainers:junit-jupiter:1.19.3'
+    testImplementation "org.testcontainers:testcontainers:${testcontainersVersion}"
+    testImplementation "org.testcontainers:postgresql:${testcontainersVersion}"
+    testImplementation "org.testcontainers:junit-jupiter:${testcontainersVersion}"
     testImplementation 'org.springframework.boot:spring-boot-testcontainers'
 
-    testImplementation 'com.github.database-rider:rider-spring:1.43.0'
-    testImplementation 'com.github.database-rider:rider-junit5:1.43.0'
+    testImplementation "com.github.database-rider:rider-spring:${databaseRiderVersion}"
+    testImplementation "com.github.database-rider:rider-junit5:${databaseRiderVersion}"
 }
 
-tasks.named('test') {
+jacoco {
+    toolVersion = "0.8.12"
+}
+
+test {
     useJUnitPlatform()
+    finalizedBy jacocoTestReport
+    check.dependsOn jacocoTestCoverageVerification
+}
+
+jacocoTestReport {
+    dependsOn test
+    reports {
+        xml.required = true
+        html.required = true
+        csv.required = false
+    }
+}
+
+jacocoTestCoverageVerification {
+    violationRules {
+        rule {
+            limit {
+                minimum = 0.85
+            }
+        }
+    }
 }

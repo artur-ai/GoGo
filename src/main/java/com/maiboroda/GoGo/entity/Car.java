@@ -6,7 +6,6 @@ import lombok.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-
 @Getter
 @Setter
 @NoArgsConstructor
@@ -14,7 +13,6 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "cars")
 public class Car {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -48,5 +46,4 @@ public class Car {
 
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
-
 }
