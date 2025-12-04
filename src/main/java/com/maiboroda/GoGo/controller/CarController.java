@@ -3,6 +3,7 @@ package com.maiboroda.GoGo.controller;
 import com.maiboroda.GoGo.dto.CarRequestDto;
 import com.maiboroda.GoGo.dto.CarResponseDto;
 import com.maiboroda.GoGo.entity.Car;
+import com.maiboroda.GoGo.service.CarService;
 import com.maiboroda.GoGo.service.CarServiceImpl;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -17,7 +18,7 @@ import java.util.List;
 @RequestMapping("/api/cars")
 @AllArgsConstructor
 public class CarController {
-    public final CarServiceImpl carService;
+    private final CarService carService;
 
     @GetMapping
     public ResponseEntity<List<Car>> gelAllCars() {
