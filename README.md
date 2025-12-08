@@ -6,6 +6,20 @@
 ![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.4.0-green)
 ![Maven](https://img.shields.io/badge/Maven-3.8+-red)
 
+![Java CI](https://github.com/artur-ai/GoGo/actions/workflows/application.yml/badge.svg)
+
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=artur-ai_GoGo&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=artur-ai_GoGo)
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=artur-ai_GoGo&metric=bugs)](https://sonarcloud.io/summary/new_code?id=artur-ai_GoGo)
+[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=artur-ai_GoGo&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=artur-ai_GoGo)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=artur-ai_GoGo&metric=coverage)](https://sonarcloud.io/summary/new_code?id=artur-ai_GoGo)
+[![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=artur-ai_GoGo&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=artur-ai_GoGo)
+[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=artur-ai_GoGo&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=artur-ai_GoGo)
+[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=artur-ai_GoGo&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=artur-ai_GoGo)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=artur-ai_GoGo&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=artur-ai_GoGo)
+[![Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=artur-ai_GoGo&metric=sqale_index)](https://sonarcloud.io/summary/new_code?id=artur-ai_GoGo)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=artur-ai_GoGo&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=artur-ai_GoGo)
+[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=artur-ai_GoGo&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=artur-ai_GoGo)
+
 ---
 
 ## 📋 Особливості

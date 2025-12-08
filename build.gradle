@@ -2,7 +2,8 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '3.4.0'
     id 'io.spring.dependency-management' version '1.1.7'
-    id 'jacoco'  // <-- Додай JaCoCo plugin
+    id 'jacoco'
+    id 'org.sonarqube' version '5.1.0.4882'
 }
 
 group = 'com.maiboroda'
@@ -55,6 +56,20 @@ dependencies {
     testImplementation "com.github.database-rider:rider-junit5:${databaseRiderVersion}"
 }
 
+sonar {
+    properties {
+        property "sonar.projectKey", "artur-ai_GoGo"
+        property "sonar.organization", "artur-ai"
+        property "sonar.host.url", "https://sonarcloud.io"
+
+        property "sonar.coverage.jacoco.xmlReportPaths", "${buildDir}/reports/jacoco/test/jacocoTestReport.xml"
+
+        property "sonar.exclusions", "**/dto/**, **/entity/**, **/config/**"
+
+        property "sonar.sourceEncoding", "UTF-8"
+    }
+}
+
 jacoco {
     toolVersion = "0.8.12"
 }
@@ -62,7 +77,6 @@ jacoco {
 test {
     useJUnitPlatform()
     finalizedBy jacocoTestReport
-    check.dependsOn jacocoTestCoverageVerification
 }
 
 jacocoTestReport {
@@ -83,3 +97,5 @@ jacocoTestCoverageVerification {
         }
     }
 }
+
+tasks.sonar.dependsOn jacocoTestReport
