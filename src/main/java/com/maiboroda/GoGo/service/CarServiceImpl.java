@@ -1,32 +1,35 @@
 package com.maiboroda.GoGo.service;
 
 
+import com.maiboroda.GoGo.dto.CarRequestDto;
+import com.maiboroda.GoGo.dto.CarResponseDto;
 import com.maiboroda.GoGo.entity.Car;
+import com.maiboroda.GoGo.mapper.CarMapper;
 import com.maiboroda.GoGo.repository.CarRepository;
-import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
-
+@Slf4j
 @Service
 public class CarServiceImpl implements CarService {
-    private static final Logger logger = Logger.getLogger(CarServiceImpl.class.getName());
     private final CarRepository carRepository;
-    @Value("${gogo.settings.random-number}")
-    int randomNumber;
+    private final CarMapper carMapper;
 
-    public CarServiceImpl(CarRepository carRepository) {
+    @Value("${gogo.settings.random-number}")
+    private int randomNumber;
+
+    public CarServiceImpl(CarRepository carRepository, CarMapper carMapper) {
         this.carRepository = carRepository;
+        this.carMapper = carMapper;
     }
 
     @Override
     public List<Car> getAllCars() {
         List<Car> cars = carRepository.findAll();
-        logger.log(Level.INFO, "Successfully add all cars from repositiry", cars.size());
+        log.info("Successfully add {} random car", cars.size());
         return cars;
     }
 
@@ -39,7 +42,16 @@ public class CarServiceImpl implements CarService {
         if (randomNumber > cars.size()) {
             throw new IllegalArgumentException("Invalid Number, it must be from 1 to " + cars.size());
         }
-        logger.log(Level.INFO, "Successfully add" + cars.size() + "random cars");
+        log.info("Successfully add{}random cars", cars.size());
         return cars;
+    }
+
+    @Override
+    public CarResponseDto addCar(CarRequestDto carRequestDto) {
+        Car car = carMapper.toEntity(carRequestDto);
+        Car savedCar = carRepository.save(car);
+        log.info("Successfully add car to db: {} {} {}", savedCar.getBrand(), savedCar.getModel(), savedCar.getId());
+
+        return carMapper.toResponseDto(savedCar);
     }
 }
