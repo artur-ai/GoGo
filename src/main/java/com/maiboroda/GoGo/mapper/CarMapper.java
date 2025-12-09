@@ -5,6 +5,7 @@ import com.maiboroda.GoGo.dto.CarResponseDto;
 import com.maiboroda.GoGo.entity.Car;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 
 @Mapper(componentModel = "spring")
 public interface CarMapper {
@@ -14,4 +15,8 @@ public interface CarMapper {
     Car toEntity(CarRequestDto carRequestDto);
 
     CarResponseDto toResponseDto(Car car);
+
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
+    void updateCarFromDto(CarRequestDto carRequestDto, @MappingTarget Car car);
 }

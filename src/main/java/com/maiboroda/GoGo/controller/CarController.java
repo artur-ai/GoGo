@@ -4,11 +4,9 @@ import com.maiboroda.GoGo.dto.CarRequestDto;
 import com.maiboroda.GoGo.dto.CarResponseDto;
 import com.maiboroda.GoGo.entity.Car;
 import com.maiboroda.GoGo.service.CarService;
-import com.maiboroda.GoGo.service.CarServiceImpl;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -40,5 +38,11 @@ public class CarController {
     public ResponseEntity<CarResponseDto> addCar(@Valid @RequestBody CarRequestDto carRequestDto) {
         CarResponseDto responseDto = carService.addCar(carRequestDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<CarResponseDto> updateCar(@Valid @RequestBody CarRequestDto carRequestDto, @PathVariable long id) {
+        CarResponseDto responseDto = carService.updateCarById(carRequestDto, id);
+        return ResponseEntity.status(HttpStatus.OK).body(responseDto);
     }
 }

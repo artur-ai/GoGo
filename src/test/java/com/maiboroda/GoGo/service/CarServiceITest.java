@@ -7,6 +7,7 @@ import com.maiboroda.GoGo.dto.CarRequestDto;
 import com.maiboroda.GoGo.dto.CarResponseDto;
 import com.maiboroda.GoGo.entity.Car;
 import com.maiboroda.GoGo.repository.CarRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -15,6 +16,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -144,5 +146,74 @@ public class CarServiceITest extends AbstractIntegrationTest {
         assertEquals(requestDto.getYear(), savedCar.getYear());
     }
 
+    @Test
+    void testUpdateCarById_ShouldUpdateExistingCar() {
+        Long carId = 1L;
 
+        CarRequestDto updateRequest = new CarRequestDto(
+                "Skoda",
+                "Fabia Updated",
+                2015,
+                "Petrol",
+                "1.4L",
+                new BigDecimal("3.5"),
+                new BigDecimal("800"),
+                new BigDecimal("1.2"),
+                "https://new-image-url.com/updated.png"
+        );
+
+        CarResponseDto result = carService.updateCarById(updateRequest, carId);
+
+        assertNotNull(result);
+        assertEquals(carId, result.getId());
+        assertEquals("Skoda", result.getBrand());
+        assertEquals("Fabia Updated", result.getModel());
+        assertEquals(2015, result.getYear());
+        assertEquals("1.4L", result.getEngine());
+        assertEquals(new BigDecimal("3.5"), result.getPricePerMinute());
+        assertEquals(new BigDecimal("800"), result.getPricePerDay());
+        assertEquals(new BigDecimal("1.2"), result.getInsurancePrice());
+
+        Car updatedCar = carRepository.findById(carId).orElseThrow();
+        assertEquals("Fabia Updated", updatedCar.getModel());
+        assertEquals(2015, updatedCar.getYear());
+        assertEquals("1.4L", updatedCar.getEngine());
+        assertNotNull(updatedCar.getCreatedAt());
+    }
+
+    @Test
+    void testUpdateCarById_ShouldThrowException_WhenCarNotFound() {
+        Long nonExistentId = 999L;
+        CarRequestDto updateRequest = createValidCarRequestDto();
+
+        assertThrows(EntityNotFoundException.class,
+                () -> carService.updateCarById(updateRequest, nonExistentId));
+    }
+
+    @Test
+    void testUpdateCarById_ShouldNotChangeIdAndCreatedAt() {
+        Long carId = 2L;
+        Car originalCar = carRepository.findById(carId).orElseThrow();
+        LocalDateTime originalCreatedAt = originalCar.getCreatedAt();
+
+        CarRequestDto updateRequest = new CarRequestDto(
+                "Updated Brand",
+                "Updated Model",
+                2020,
+                "Diesel",
+                "2.0L",
+                new BigDecimal("10.0"),
+                new BigDecimal("2000"),
+                new BigDecimal("5.0"),
+                "https://updated-url.com/car.png"
+        );
+
+        carService.updateCarById(updateRequest, carId);
+
+        Car updatedCar = carRepository.findById(carId).orElseThrow();
+        assertEquals(carId, updatedCar.getId());
+        assertEquals(originalCreatedAt, updatedCar.getCreatedAt());
+        assertEquals("Updated Brand", updatedCar.getBrand());
+        assertEquals("Updated Model", updatedCar.getModel());
+    }
 }

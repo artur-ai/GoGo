@@ -6,6 +6,7 @@ import com.maiboroda.GoGo.dto.CarResponseDto;
 import com.maiboroda.GoGo.entity.Car;
 import com.maiboroda.GoGo.mapper.CarMapper;
 import com.maiboroda.GoGo.repository.CarRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -53,5 +54,15 @@ public class CarServiceImpl implements CarService {
         log.info("Successfully add car to db: {} {} {}", savedCar.getBrand(), savedCar.getModel(), savedCar.getId());
 
         return carMapper.toResponseDto(savedCar);
+    }
+
+    @Override
+    public CarResponseDto updateCarById(CarRequestDto carRequestDto, long id) {
+        Car existingCar = carRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Car not found by id: " + id));
+        carMapper.updateCarFromDto(carRequestDto, existingCar);
+        Car updatedCar = carRepository.save(existingCar);
+
+        return carMapper.toResponseDto(updatedCar);
     }
 }
