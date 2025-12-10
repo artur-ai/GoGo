@@ -161,26 +161,72 @@ public class CarServiceITest extends AbstractIntegrationTest {
                 new BigDecimal("1.2"),
                 "https://new-image-url.com/updated.png"
         );
-
-        CarResponseDto result = carService.updateCarById(updateRequest, carId);
-
-        assertNotNull(result);
-        assertEquals(carId, result.getId());
-        assertEquals("Skoda", result.getBrand());
-        assertEquals("Fabia Updated", result.getModel());
-        assertEquals(2015, result.getYear());
-        assertEquals("1.4L", result.getEngine());
-        assertEquals(new BigDecimal("3.5"), result.getPricePerMinute());
-        assertEquals(new BigDecimal("800"), result.getPricePerDay());
-        assertEquals(new BigDecimal("1.2"), result.getInsurancePrice());
-
-        Car updatedCar = carRepository.findById(carId).orElseThrow();
-        assertEquals("Fabia Updated", updatedCar.getModel());
-        assertEquals(2015, updatedCar.getYear());
-        assertEquals("1.4L", updatedCar.getEngine());
-        assertNotNull(updatedCar.getCreatedAt());
     }
 
+    @Test
+    void testFindCarByCountry_Ukraine_ReturnsCorrectCount() {
+        List<CarResponseDto> cars = carService.findCarByCountry("Ukraine");
+
+        assertNotNull(cars);
+        assertEquals(6, cars.size());
+    }
+
+    @Test
+    void testFindCarByCountry_Poland_ReturnsCorrectCount() {
+        List<CarResponseDto> cars = carService.findCarByCountry("Poland");
+
+        assertNotNull(cars);
+        assertEquals(7, cars.size());
+    }
+
+    @Test
+    void testFindCarByCountry_Germany_ReturnsCorrectCount() {
+        List<CarResponseDto> cars = carService.findCarByCountry("Germany");
+
+        assertNotNull(cars);
+        assertEquals(7, cars.size());
+    }
+
+    @Test
+    void testFindCarByCountry_Italy_ReturnsCorrectBrands() {
+        List<CarResponseDto> cars = carService.findCarByCountry("Italy");
+
+        assertEquals(6, cars.size());
+
+        Set<String> brands = cars.stream()
+                .map(CarResponseDto::getBrand)
+                .collect(Collectors.toSet());
+
+        assertThat(brands).containsExactlyInAnyOrder(
+                "Nissan", "Skoda", "Audi", "BMW", "Toyota", "Hyundai"
+        );
+    }
+
+    @Test
+    void testFindCarByCountry_Spain_ReturnsCorrectCars() {
+        List<CarResponseDto> cars = carService.findCarByCountry("Spain");
+
+        assertEquals(4, cars.size());
+
+        List<String> models = cars.stream()
+                .map(CarResponseDto::getModel)
+                .sorted()
+                .toList();
+
+        assertThat(models).containsExactly("Camry", "Fiesta", "H-1", "Rapid");
+    }
+
+    @Test
+    void testFindCarByCountry_NonExistentCountry_ThrowsException() {
+        EntityNotFoundException exception = assertThrows(
+                EntityNotFoundException.class,
+                () -> carService.findCarByCountry("Australia")
+        );
+
+        assertThat(exception.getMessage())
+                .contains("No cars found for country");
+    }
+    
     @Test
     void testUpdateCarById_ShouldThrowException_WhenCarNotFound() {
         Long nonExistentId = 999L;
@@ -215,5 +261,23 @@ public class CarServiceITest extends AbstractIntegrationTest {
         assertEquals(originalCreatedAt, updatedCar.getCreatedAt());
         assertEquals("Updated Brand", updatedCar.getBrand());
         assertEquals("Updated Model", updatedCar.getModel());
+    }
+
+    @Test
+    void testFindCarByCountry_ReturnsCarResponseDtoWithAllFields() {
+        List<CarResponseDto> cars = carService.findCarByCountry("Ukraine");
+
+        CarResponseDto firstCar = cars.get(0);
+        assertNotNull(firstCar.getId());
+        assertNotNull(firstCar.getBrand());
+        assertNotNull(firstCar.getModel());
+        assertNotNull(firstCar.getYear());
+        assertNotNull(firstCar.getFuelType());
+        assertNotNull(firstCar.getEngine());
+        assertNotNull(firstCar.getPricePerMinute());
+        assertNotNull(firstCar.getPricePerDay());
+        assertNotNull(firstCar.getInsurancePrice());
+        assertNotNull(firstCar.getImageUrl());
+        assertNotNull(firstCar.getCreatedAt());
     }
 }

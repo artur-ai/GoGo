@@ -9,6 +9,7 @@ import com.maiboroda.GoGo.repository.CarRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -52,6 +53,20 @@ public class CarServiceImpl implements CarService {
         log.info("Successfully add car to db: {} {} {}", savedCar.getBrand(), savedCar.getModel(), savedCar.getId());
 
         return carMapper.toResponseDto(savedCar);
+    }
+
+    @Override
+    public List<CarResponseDto> findCarByCountry(String countryName) {
+        List<Car> cars = carRepository.findByCountriesName(countryName);
+
+        if (cars.isEmpty()) {
+            throw new EntityNotFoundException("No cars found for country: " + countryName);
+        }
+        log.info("Found {} cars for country: {}", cars.size(), countryName);
+
+        return cars.stream()
+                .map(carMapper::toResponseDto)
+                .toList();
     }
 
     @Transactional
