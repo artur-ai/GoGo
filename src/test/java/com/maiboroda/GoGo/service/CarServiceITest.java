@@ -7,6 +7,7 @@ import com.maiboroda.GoGo.dto.CarRequestDto;
 import com.maiboroda.GoGo.dto.CarResponseDto;
 import com.maiboroda.GoGo.entity.Car;
 import com.maiboroda.GoGo.repository.CarRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -144,5 +145,85 @@ public class CarServiceITest extends AbstractIntegrationTest {
         assertEquals(requestDto.getYear(), savedCar.getYear());
     }
 
+    @Test
+    void testFindCarByCountry_Ukraine_ReturnsCorrectCount() {
+        List<CarResponseDto> cars = carService.findCarByCountry("Ukraine");
 
+        assertNotNull(cars);
+        assertEquals(6, cars.size());
+    }
+
+    @Test
+    void testFindCarByCountry_Poland_ReturnsCorrectCount() {
+        List<CarResponseDto> cars = carService.findCarByCountry("Poland");
+
+        assertNotNull(cars);
+        assertEquals(7, cars.size());
+    }
+
+    @Test
+    void testFindCarByCountry_Germany_ReturnsCorrectCount() {
+        List<CarResponseDto> cars = carService.findCarByCountry("Germany");
+
+        assertNotNull(cars);
+        assertEquals(7, cars.size());
+    }
+
+    @Test
+    void testFindCarByCountry_Italy_ReturnsCorrectBrands() {
+        List<CarResponseDto> cars = carService.findCarByCountry("Italy");
+
+        assertEquals(6, cars.size());
+
+        Set<String> brands = cars.stream()
+                .map(CarResponseDto::getBrand)
+                .collect(Collectors.toSet());
+
+        assertThat(brands).containsExactlyInAnyOrder(
+                "Nissan", "Skoda", "Audi", "BMW", "Toyota", "Hyundai"
+        );
+    }
+
+    @Test
+    void testFindCarByCountry_Spain_ReturnsCorrectCars() {
+        List<CarResponseDto> cars = carService.findCarByCountry("Spain");
+
+        assertEquals(4, cars.size());
+
+        List<String> models = cars.stream()
+                .map(CarResponseDto::getModel)
+                .sorted()
+                .toList();
+
+        assertThat(models).containsExactly("Camry", "Fiesta", "H-1", "Rapid");
+    }
+
+    @Test
+    void testFindCarByCountry_NonExistentCountry_ThrowsException() {
+        EntityNotFoundException exception = assertThrows(
+                EntityNotFoundException.class,
+                () -> carService.findCarByCountry("Australia")
+        );
+
+        assertThat(exception.getMessage())
+                .contains("No cars found for country");
+    }
+
+    @Test
+    void testFindCarByCountry_ReturnsCarResponseDtoWithAllFields() {
+        List<CarResponseDto> cars = carService.findCarByCountry("Ukraine");
+
+        CarResponseDto firstCar = cars.get(0);
+        assertNotNull(firstCar.getId());
+        assertNotNull(firstCar.getBrand());
+        assertNotNull(firstCar.getModel());
+        assertNotNull(firstCar.getYear());
+        assertNotNull(firstCar.getFuelType());
+        assertNotNull(firstCar.getEngine());
+        assertNotNull(firstCar.getPricePerMinute());
+        assertNotNull(firstCar.getPricePerDay());
+        assertNotNull(firstCar.getInsurancePrice());
+        assertNotNull(firstCar.getImageUrl());
+        assertNotNull(firstCar.getCreatedAt());
+    }
 }

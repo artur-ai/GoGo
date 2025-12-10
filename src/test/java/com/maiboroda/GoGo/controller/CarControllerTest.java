@@ -70,7 +70,10 @@ public class CarControllerTest extends AbstractIntegrationTest {
     void testReturnAllCarBrands() throws Exception {
         mockMvc.perform(get("/api/cars"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[*].brand", containsInAnyOrder("Skoda", "Ravon", "Volkswagen", "Ford", "Skoda", "Volkswagen", "Nissan", "Audi", "Skoda", "BMW", "Toyota", "Hyundai")));
+                .andExpect(jsonPath("$[*].brand", containsInAnyOrder(
+                        "Skoda", "Ravon", "Volkswagen", "Ford",
+                        "Skoda", "Volkswagen", "Nissan", "Audi",
+                        "Skoda", "BMW", "Toyota", "Hyundai")));
     }
 
     @Test
@@ -215,6 +218,105 @@ public class CarControllerTest extends AbstractIntegrationTest {
                         .content(objectMapper.writeValueAsString(requestDto)))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.errors.pricePerMinute", is("Price per minute must be positive")));
+    }
+
+    @Test
+    void testFindCarsByCountry_Ukraine_Returns6Cars() throws Exception {
+        mockMvc.perform(get("/api/cars/country")
+                        .param("countryName", "Ukraine"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType("application/json"))
+                .andExpect(jsonPath("$", hasSize(6)))
+                .andExpect(jsonPath("$[*].brand", containsInAnyOrder(
+                        "Skoda", "Ravon", "Volkswagen", "Ford", "BMW", "Hyundai")));
+    }
+
+    @Test
+    void testFindCarsByCountry_Poland_Returns7Cars() throws Exception {
+        mockMvc.perform(get("/api/cars/country")
+                        .param("countryName", "Poland"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(7)))
+                .andExpect(jsonPath("$[*].brand", containsInAnyOrder(
+                        "Skoda", "Ravon", "Volkswagen", "Ford", "Volkswagen", "Hyundai", "Skoda")));
+    }
+
+    @Test
+    void testFindCarsByCountry_Germany_Returns7Cars() throws Exception {
+        mockMvc.perform(get("/api/cars/country")
+                        .param("countryName", "Germany"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(7)))
+                .andExpect(jsonPath("$[*].brand", hasItem("Audi")))
+                .andExpect(jsonPath("$[*].brand", hasItem("Nissan")));
+    }
+
+    @Test
+    void testFindCarsByCountry_France_Returns8Cars() throws Exception {
+        mockMvc.perform(get("/api/cars/country")
+                        .param("countryName", "France"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(8)));
+    }
+
+    @Test
+    void testFindCarsByCountry_Spain_Returns4Cars() throws Exception {
+        mockMvc.perform(get("/api/cars/country")
+                        .param("countryName", "Spain"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(4)))
+                .andExpect(jsonPath("$[*].brand", containsInAnyOrder(
+                        "Ford", "Skoda", "Toyota", "Hyundai")));
+    }
+
+    @Test
+    void testFindCarsByCountry_Netherlands_Returns3Cars() throws Exception {
+        mockMvc.perform(get("/api/cars/country")
+                        .param("countryName", "Netherlands"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(3)))
+                .andExpect(jsonPath("$[*].brand", containsInAnyOrder(
+                        "Volkswagen", "Nissan", "Audi")));
+    }
+
+    @Test
+    void testFindCarsByCountry_Japan_Returns3Cars() throws Exception {
+        mockMvc.perform(get("/api/cars/country")
+                        .param("countryName", "Japan"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(3)))
+                .andExpect(jsonPath("$[*].brand", hasItem("Toyota")))
+                .andExpect(jsonPath("$[*].model", hasItem("Leaf")));
+    }
+
+    @Test
+    void testFindCarsByCountry_ReturnsCarWithAllRequiredFields() throws Exception {
+        mockMvc.perform(get("/api/cars/country")
+                        .param("countryName", "Ukraine"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].id", notNullValue()))
+                .andExpect(jsonPath("$[0].brand", notNullValue()))
+                .andExpect(jsonPath("$[0].model", notNullValue()))
+                .andExpect(jsonPath("$[0].year", notNullValue()))
+                .andExpect(jsonPath("$[0].fuelType", notNullValue()))
+                .andExpect(jsonPath("$[0].engine", notNullValue()))
+                .andExpect(jsonPath("$[0].pricePerMinute", isA(Number.class)))
+                .andExpect(jsonPath("$[0].pricePerDay", isA(Number.class)))
+                .andExpect(jsonPath("$[0].insurancePrice", isA(Number.class)))
+                .andExpect(jsonPath("$[0].imageUrl", startsWith("https://")))
+                .andExpect(jsonPath("$[0].createdAt", notNullValue()));
+    }
+
+    @Test
+    void testFindCarsByCountry_HyundaiH1_InMultipleCountries() throws Exception {
+        String[] countries = {"Ukraine", "Poland", "Germany", "France", "Italy", "Spain"};
+
+        for (String country : countries) {
+            mockMvc.perform(get("/api/cars/country")
+                            .param("countryName", country))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$[?(@.brand == 'Hyundai' && @.model == 'H-1')]", hasSize(1)));
+        }
     }
 }
 

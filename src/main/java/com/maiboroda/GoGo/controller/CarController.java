@@ -41,4 +41,15 @@ public class CarController {
         CarResponseDto responseDto = carService.addCar(carRequestDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
     }
+
+    @GetMapping("/country")
+    public ResponseEntity<List<CarResponseDto>> findCarsByCountry(
+            @RequestParam String countryName) {
+        try {
+            List<CarResponseDto> cars = carService.findCarByCountry(countryName);
+            return ResponseEntity.ok(cars);
+        } catch (IllegalArgumentException exception) {
+            return ResponseEntity.badRequest().body(List.of());
+        }
+    }
 }
