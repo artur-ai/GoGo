@@ -8,6 +8,10 @@ import java.util.List;
 
 public interface CarService {
     List<Car> getAllCars();
+
     List<Car> getRandomCars();
+
     CarResponseDto addCar(CarRequestDto carRequestDto);
+
+    List<CarResponseDto> findCarByCountry(String countryName);
 }
