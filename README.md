@@ -1,12 +1,11 @@
-# 🚗 GoGo Carsharing
-
-**GoGo** — це сучасна система каршерінгу, розроблена на Spring Boot. Проект дозволяє керувати автопарком, додавати нові автомобілі та отримувати інформацію про доступні машини.
+🚗 GoGo Carsharing
+GoGo is a modern carsharing management system built with Spring Boot. The project provides a RESTful API for managing vehicle fleets, adding new cars, and retrieving information about available vehicles.
 
 ![Java](https://img.shields.io/badge/Java-23-orange)
 ![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.4.0-green)
-![Maven](https://img.shields.io/badge/Maven-3.8+-red)
+![Gradle](https://img.shields.io/badge/Maven-3.8+-red)
 
-![Java CI](https://github.com/artur-ai/GoGo/actions/workflows/sonarcloud.yml/badge.svg)
+**Java CI**
 
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=artur-ai_GoGo&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=artur-ai_GoGo)
 [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=artur-ai_GoGo&metric=bugs)](https://sonarcloud.io/summary/new_code?id=artur-ai_GoGo)
@@ -21,72 +20,23 @@
 
 ---
 
-## 📋 Особливості
-
-✅ Додавання нових автомобілів через REST API  
-✅ Перегляд всього автопарку  
-✅ Отримання випадкових автомобілів  
-✅ Валідація даних через Bean Validation  
-✅ DTO pattern для безпечної передачі даних  
-✅ Логування операцій  
-
----
-
-## 🛠 Технології
-
-- **Java 23**
-- **Spring Boot 3.4.0**
-  - Spring Web
-  - Spring Data JPA
-  - Spring Validation
-- **Lombok** — зменшення boilerplate коду
-- **PostgreSQL** — база даних
-- **Maven** — система збірки
-- **TestContainers DBRider** - тестування
-
----
-
-## 📦 Встановлення та запуск
-
-### Передумови
-- Java 23+
-- Maven 3.8+
-- PostgreSQL
-
-### Крок 1: Клонуйте репозиторій
-```bash
-git clone https://github.com/artur-ai/GoGo.git
-cd GoGo
-```
-
-### Крок 2: Налаштуйте базу даних
-Відредагуйте `src/main/resources/application.properties`:
-```properties
-spring.datasource.url=jdbc:postgresql://localhost:5432/gogo_db
-spring.datasource.username=postgres
-spring.datasource.password=postgres
-spring.jpa.hibernate.ddl-auto=update
-
-gogo.settings.random-number=3
-```
-
-### Крок 3: Запустіть проект
-```bash
-mvn spring-boot:run
-```
-
-Додаток буде доступний за адресою: `http://localhost:8080`
+📋 Features
+✅ Add new cars via REST API
+✅ View the entire vehicle fleet
+✅ Get random cars for quick selection
+✅ DTO pattern for secure data transfer
+✅ Input validation and error handling
+✅ Clean architecture with service layer 
 
 ---
 
 ## 🚀 API Endpoints
 
-### 1️⃣ Отримати всі автомобілі
-```http
-GET /cars/all
+### 1️⃣ Get all cars
+``` /GET/api/cars
 ```
 
-**Відповідь:**
+**Response:**
 ```json
 [
   {
@@ -107,22 +57,21 @@ GET /cars/all
 
 ---
 
-### 2️⃣ Отримати випадкові автомобілі
-```http
-GET /cars/random
+### 2️⃣ Get random car
 ```
-
-Повертає випадкову кількість автомобілів (налаштовується через `gogo.settings.random-number`)
+/GET /cars/random
+```
+Return random number of car(configured via`gogo.settings.random-number`)
 
 ---
 
-### 3️⃣ Додати новий автомобіль
+### 3️⃣ Add new car
 ```http
 POST /cars/add
 Content-Type: application/json
 ```
 
-**Тіло запиту:**
+**Body:**
 ```json
 {
   "brand": "BMW",
@@ -137,7 +86,7 @@ Content-Type: application/json
 }
 ```
 
-**Відповідь (201 Created):**
+**Response(201 Created):**
 ```json
 {
   "id": 2,
@@ -156,7 +105,7 @@ Content-Type: application/json
 
 ---
 
-## 📁 Структура проекту
+## 📁 Project structure
 ```
 GoGo/
 ├── src/
@@ -185,85 +134,25 @@ GoGo/
 
 ---
 
-## 🧪 Тестування
+## 🧪 Testing
 
-### Через Postman
-1. Імпортуйте колекцію з папки `/postman`
-2. Запустіть тести
-
-### Через cURL
-```bash
-# Додати автомобіль
-curl -X POST http://localhost:8080/cars/add \
-  -H "Content-Type: application/json" \
-  -d '{
-    "brand": "Mercedes",
-    "model": "E-Class",
-    "year": 2024,
-    "fuelType": "Hybrid",
-    "engine": "2.0L Turbo",
-    "pricePerMinute": 2.8,
-    "pricePerDay": 180.00,
-    "insurancePrice": 28.00,
-    "imageUrl": "https://example.com/mercedes.jpg"
-  }'
-
-# Отримати всі автомобілі
-curl http://localhost:8080/cars/all
-```
+### Via Postman
+1. Import collection from `/postman`
+2. Run tests
 
 ---
 
-## 🔧 Валідація
+## 👨‍💻 Author
 
-Проект використовує Bean Validation для перевірки даних:
-
-- **brand** — не може бути порожнім, макс 50 символів
-- **model** — не може бути порожнім, макс 50 символів
-- **year** — від 1900 до 2030
-- **fuelType** — не може бути порожнім
-- **engine** — не може бути порожнім
-- **pricePerMinute** — має бути позитивним числом
-- **pricePerDay** — має бути позитивним числом
-- **insurancePrice** — не може бути від'ємним
-
-Приклад помилки валідації:
-```json
-{
-  "brand": "Brand cannot be empty",
-  "year": "Year must be after 1900",
-  "pricePerMinute": "Price per minute must be positive"
-}
-```
-
----
-
-## 🎯 Майбутні покращення
-
-- [ ] Додати геолокацію автомобілів
-- [ ] Додати систему рейтингів та відгуків
-- [ ] Інтегрувати платіжну систему
-- [ ] Додати Docker Compose для легкого розгортання
-
----
-
-## 👨‍💻 Автор
-
-**Майборода Артур**  
+**Maiboroda Artur**  
 GitHub: [@artur-ai](https://github.com/artur-ai)
 
 ---
 
 ## 🤝 Contribution
 
-Буду радий вашим pull request'ам! Для значних змін спочатку відкрийте issue для обговорення.
-
-1. Fork проект
-2. Створіть feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit зміни (`git commit -m 'Add some AmazingFeature'`)
-4. Push в branch (`git push origin feature/AmazingFeature`)
-5. Відкрийте Pull Request
+I would be happy to receive your pull requests! For significant changes, please open an issue for discussion first
 
 ---
 
-⭐ **Якщо проект вам сподобався, поставте зірочку!** ⭐
+⭐ **If you liked the project, please give it a star!** ⭐
