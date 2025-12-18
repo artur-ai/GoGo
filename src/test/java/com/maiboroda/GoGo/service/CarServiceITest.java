@@ -42,7 +42,7 @@ public class CarServiceITest extends AbstractIntegrationTest {
 
     @Test
     void testGetAllCars_ReturnCorrectSize() {
-        List<Car> cars = carService.getAllCars();
+        List<CarResponseDto> cars = carService.getAllCars();
 
         assertFalse(cars.isEmpty());
         assertEquals(12, cars.size());
@@ -50,8 +50,8 @@ public class CarServiceITest extends AbstractIntegrationTest {
 
     @Test
     void testReturnFirstCarWithAllFields() {
-        List<Car> cars = carService.getAllCars();
-        Car firstCar = cars.get(0);
+        List<CarResponseDto> cars = carService.getAllCars();
+        CarResponseDto firstCar = cars.get(0);
 
         assertEquals(1, firstCar.getId());
         assertEquals("Skoda", firstCar.getBrand());
@@ -64,7 +64,7 @@ public class CarServiceITest extends AbstractIntegrationTest {
 
     @Test
     void testGetThreeRandomCar() {
-        List<Car> cars = carService.getRandomCars();
+        List<CarResponseDto> cars = carService.getRandomCars();
 
         assertFalse(cars.isEmpty());
         assertEquals(3, cars.size());
@@ -72,9 +72,9 @@ public class CarServiceITest extends AbstractIntegrationTest {
 
     @Test
     void testGetAllCars_ContainsExpectedBrands() {
-        List<Car> cars = carService.getAllCars();
+        List<CarResponseDto> cars = carService.getAllCars();
         Set<String> brands = cars.stream()
-                .map(Car::getBrand)
+                .map(CarResponseDto::getBrand)
                 .collect(Collectors.toSet());
 
         assertThat(brands).containsExactlyInAnyOrder(
@@ -85,9 +85,9 @@ public class CarServiceITest extends AbstractIntegrationTest {
 
     @Test
     void testGetAllCars_ContainsExpectedFuelTypes() {
-        List<Car> cars = carService.getAllCars();
+        List<CarResponseDto> cars = carService.getAllCars();
         Set<String> fuelTypes = cars.stream()
-                .map(Car::getFuelType)
+                .map(CarResponseDto::getFuelType)
                 .collect(Collectors.toSet());
 
         assertThat(fuelTypes).containsExactlyInAnyOrder(
@@ -97,7 +97,7 @@ public class CarServiceITest extends AbstractIntegrationTest {
 
     @Test
     void testServiceUsesRepository() {
-        List<Car> serviceCars = carService.getAllCars();
+        List<CarResponseDto> serviceCars = carService.getAllCars();
         List<Car> repositoryCars = carRepository.findAll();
 
         assertEquals(repositoryCars.size(), serviceCars.size());
@@ -107,7 +107,7 @@ public class CarServiceITest extends AbstractIntegrationTest {
     void testGetRandomCars_UsesRepositoryMethod() {
         ReflectionTestUtils.setField(carService, "randomNumber", 3);
 
-        List<Car> serviceCars = carService.getRandomCars();
+        List<CarResponseDto> serviceCars = carService.getRandomCars();
         List<Car> repositoryCars = carRepository.getRandomCars(3);
 
         assertEquals(repositoryCars.size(), serviceCars.size());

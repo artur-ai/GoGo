@@ -8,8 +8,8 @@ import jakarta.validation.Valid;
 import java.util.List;
 
 public interface CarService {
-    List<Car> getAllCars();
-    List<Car> getRandomCars();
+    List<CarResponseDto> getAllCars();
+    List<CarResponseDto> getRandomCars();
     CarResponseDto addCar(CarRequestDto carRequestDto);
     CarResponseDto updateCarById(CarRequestDto carRequestDto, long id);
 }
