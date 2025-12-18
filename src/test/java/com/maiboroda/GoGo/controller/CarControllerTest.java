@@ -171,7 +171,7 @@ public class CarControllerTest extends AbstractIntegrationTest {
     void testAddValidCarReturen201Created() throws Exception {
         CarRequestDto requestDto = createVaidCarRequestDto();
 
-        mockMvc.perform(post("/api/cars/add")
+        mockMvc.perform(post("/api/cars")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDto)))
                 .andExpect(status().isCreated())
@@ -185,7 +185,7 @@ public class CarControllerTest extends AbstractIntegrationTest {
         CarRequestDto requestDto = createVaidCarRequestDto();
         requestDto.setYear(3000);
 
-        mockMvc.perform(post("/api/cars/add")
+        mockMvc.perform(post("/api/cars")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDto)))
                 .andExpect(status().isBadRequest())
@@ -198,7 +198,7 @@ public class CarControllerTest extends AbstractIntegrationTest {
         CarRequestDto requestDto = createVaidCarRequestDto();
         requestDto.setBrand("");
 
-        mockMvc.perform(post("/api/cars/add")
+        mockMvc.perform(post("/api/cars")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDto)))
                 .andExpect(status().isBadRequest())
@@ -210,7 +210,7 @@ public class CarControllerTest extends AbstractIntegrationTest {
         CarRequestDto requestDto = createVaidCarRequestDto();
         requestDto.setPricePerMinute(BigDecimal.ZERO);
 
-        mockMvc.perform(post("/api/cars/add")
+        mockMvc.perform(post("/api/cars")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDto)))
                 .andExpect(status().isBadRequest())

@@ -7,6 +7,8 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
+import java.util.List;
+
 @Mapper(componentModel = "spring")
 public interface CarMapper {
 
@@ -15,6 +17,8 @@ public interface CarMapper {
     Car toEntity(CarRequestDto carRequestDto);
 
     CarResponseDto toResponseDto(Car car);
+
+    List<CarResponseDto> toResponseDtoList(List<Car> cars);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
