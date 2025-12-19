@@ -2,7 +2,7 @@ name: Java CI with Gradle
 
 on:
   push:
-    branches: [ "master", "main" ]
+    branches: [ "master" ]
   pull_request:
     types: [opened, synchronize, reopened]
   workflow_dispatch:
@@ -34,7 +34,7 @@ jobs:
 
 
       - name: Validate Gradle Wrapper
-        uses: gradle/wrapper-validation-action@v2  # ⬅️ Production: безпека
+        uses: gradle/wrapper-validation-action@v2
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
