@@ -20,8 +20,7 @@ import java.math.BigDecimal;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertNotEquals;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -45,6 +44,7 @@ public class CarControllerTest extends AbstractIntegrationTest {
                 new BigDecimal("15.50"), new BigDecimal("1200.00"), new BigDecimal("10.00"),
                 "https://test.com/dodge.png");
     }
+
 
     @Test
     void testReturnAllCars() throws Exception {
@@ -171,7 +171,7 @@ public class CarControllerTest extends AbstractIntegrationTest {
     void testAddValidCarReturen201Created() throws Exception {
         CarRequestDto requestDto = createVaidCarRequestDto();
 
-        mockMvc.perform(post("/api/cars/add")
+        mockMvc.perform(post("/api/cars")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDto)))
                 .andExpect(status().isCreated())
@@ -185,7 +185,7 @@ public class CarControllerTest extends AbstractIntegrationTest {
         CarRequestDto requestDto = createVaidCarRequestDto();
         requestDto.setYear(3000);
 
-        mockMvc.perform(post("/api/cars/add")
+        mockMvc.perform(post("/api/cars")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDto)))
                 .andExpect(status().isBadRequest())
@@ -198,7 +198,7 @@ public class CarControllerTest extends AbstractIntegrationTest {
         CarRequestDto requestDto = createVaidCarRequestDto();
         requestDto.setBrand("");
 
-        mockMvc.perform(post("/api/cars/add")
+        mockMvc.perform(post("/api/cars")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDto)))
                 .andExpect(status().isBadRequest())
@@ -210,11 +210,120 @@ public class CarControllerTest extends AbstractIntegrationTest {
         CarRequestDto requestDto = createVaidCarRequestDto();
         requestDto.setPricePerMinute(BigDecimal.ZERO);
 
-        mockMvc.perform(post("/api/cars/add")
+        mockMvc.perform(post("/api/cars")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDto)))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.errors.pricePerMinute", is("Price per minute must be positive")));
+    }
+
+    @Test
+    void testUpdateCar_ShouldReturn200okAndUpdateCar() throws Exception {
+        CarRequestDto updateCar = createVaidCarRequestDto();
+        updateCar.setBrand("Skoda");
+        updateCar.setModel("Fabia Updated");
+        updateCar.setYear(2015);
+
+        mockMvc.perform(put("/api/cars/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(updateCar)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", is(1)))
+                .andExpect(jsonPath("$.brand", is("Skoda")))
+                .andExpect(jsonPath("$.model", is("Fabia Updated")))
+                .andExpect(jsonPath("$.year", is(2015)))
+                .andExpect(jsonPath("$.engine", is("2.4")))
+                .andExpect(jsonPath("$.pricePerDay", is(1200.0)));
+    }
+
+    @Test
+    void testUpdateCar_WithInvalidYear_ShouldReturn400BadRequest() throws Exception {
+        CarRequestDto updateRequest = createVaidCarRequestDto();
+        updateRequest.setYear(1800);
+
+        mockMvc.perform(put("/api/cars/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(updateRequest)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message", is("Validation failed")))
+                .andExpect(jsonPath("$.errors.year", is("Year must be after 1930")));
+    }
+
+    @Test
+    void testUpdateCar_WithEmptyBrand_ShouldReturn400BadRequest() throws Exception {
+        CarRequestDto updateRequest = createVaidCarRequestDto();
+        updateRequest.setBrand("");
+
+        mockMvc.perform(put("/api/cars/3")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(updateRequest)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errors.brand", is("Brand can not be empty")));
+    }
+
+    @Test
+    void testUpdateCar_WithNegativePrice_ShouldReturn400BadRequest() throws Exception {
+        CarRequestDto updateRequest = createVaidCarRequestDto();
+        updateRequest.setPricePerDay(new BigDecimal("-100"));
+
+        mockMvc.perform(put("/api/cars/4")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(updateRequest)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errors.pricePerDay", is("Price per day must be positive")));
+    }
+
+    @Test
+    void testUpdateCar_NonExistentId_ShouldReturn404NotFound() throws Exception {
+        CarRequestDto updateRequest = createVaidCarRequestDto();
+
+        mockMvc.perform(put("/api/cars/999")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(updateRequest)))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.status", is(404)))
+                .andExpect(jsonPath("$.error", is("Not Found")))
+                .andExpect(jsonPath("$.message", is("Car not found by id: 999")));
+    }
+
+    @Test
+    void testUpdateCar_AllFieldsUpdate_ShouldReturn200() throws Exception {
+        CarRequestDto updateRequest = new CarRequestDto(
+                "Tesla",
+                "Model 3",
+                2023,
+                "Electric",
+                "EV Motor",
+                new BigDecimal("8.5"),
+                new BigDecimal("3500.00"),
+                new BigDecimal("2.5"),
+                "https://new-image.com/tesla.png"
+        );
+
+        mockMvc.perform(put("/api/cars/5")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(updateRequest)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.brand", is("Tesla")))
+                .andExpect(jsonPath("$.model", is("Model 3")))
+                .andExpect(jsonPath("$.fuelType", is("Electric")))
+                .andExpect(jsonPath("$.engine", is("EV Motor")))
+                .andExpect(jsonPath("$.pricePerMinute", is(8.5)))
+                .andExpect(jsonPath("$.insurancePrice", is(2.5)))
+                .andExpect(jsonPath("$.imageUrl", is("https://new-image.com/tesla.png")));
+    }
+
+    @ParameterizedTest
+    @ValueSource(longs = {1, 2, 3, 7, 10})
+    void testUpdateCar_MultipleValidIds_ShouldReturn200(long carId) throws Exception {
+        CarRequestDto updateRequest = createVaidCarRequestDto();
+
+        mockMvc.perform(put("/api/cars/" + carId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(updateRequest)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", is((int) carId)))
+                .andExpect(jsonPath("$.brand", is("Dodge")));
     }
 }
 

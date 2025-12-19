@@ -1,0 +1,204 @@
+{
+	"info": {
+		"_postman_id": "fffd6688-0977-4cf1-bce6-5578cba549a6",
+		"name": "GoGo Carsharing API",
+		"description": "### Welcome to Postman! This is your first collection. \n\nCollections are your starting point for building and testing APIs. You can use this one to:\n\n• Group related requests\n• Test your API in real-world scenarios\n• Document and share your requests\n\nUpdate the name and overview whenever you’re ready to make it yours.\n\n[Learn more about Postman Collections.](https://learning.postman.com/docs/collections/collections-overview/)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "50281341",
+		"_collection_link": "https://mauboroda-artur-7871799.postman.co/workspace/Artur's-Workspace~f4735faa-848d-45d6-8dbc-8b4bd14bd1f2/collection/50281341-fffd6688-0977-4cf1-bce6-5578cba549a6?action=share&source=collection_link&creator=50281341"
+	},
+	"item": [
+		{
+			"name": "Get All Cars",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/cars",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"cars"
+					]
+				},
+				"description": "This is a GET request and it is used to \"get\" data from an endpoint. There is no request body for a GET request, but you can use query parameters to help specify the resource you want data on (e.g., in this request, we have `id=1`).\n\nA successful GET response will have a `200 OK` status, and should include some kind of response body - for example, HTML web content or JSON data."
+			},
+			"response": []
+		},
+		{
+			"name": "Add New Car",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Successful POST request\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"brand\": \"BMW\",\n  \"model\": \"X5\",\n  \"year\": 2023,\n  \"fuelType\": \"Diesel\",\n  \"engine\": \"3.0L I6\",\n  \"pricePerMinute\": 3.0,\n  \"pricePerDay\": 200.00,\n  \"insurancePrice\": 30.00,\n  \"imageUrl\": \"https://example.com/bmw.jpg\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/cars/add/25",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"cars",
+						"add",
+						"25"
+					]
+				},
+				"description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
+			},
+			"response": []
+		},
+		{
+			"name": "Get 3 Random cars",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/cars/random",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"cars",
+						"random"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get 5 random cars",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/cars/random?count=5",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"cars",
+						"random"
+					],
+					"query": [
+						{
+							"key": "count",
+							"value": "5"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Car",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"brand\": \"BMW\",\n  \"model\": \"X5\",\n  \"year\": 2023,\n  \"fuelType\": \"Diesel\",\n  \"engine\": \"3.0L I6\",\n  \"pricePerMinute\": 7.00,\n  \"pricePerDay\": 2000.00,\n  \"insurancePrice\": 6.1,\n  \"imageUrl\": \"https://res.cloudinary.com/de6b0q56z/image/upload/v1766062177/BMW_X5_2023_cjxnkh.jpg\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/cars/26",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"cars",
+						"26"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Car Tesla",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"brand\": \"Tesla\",\n  \"model\": \"Model Y\",\n  \"year\": 2024,\n  \"fuelType\": \"Dual Motor\",\n  \"engine\": \"Electric\",\n  \"pricePerMinute\": 7.00,\n  \"pricePerDay\": 2200.00,\n  \"insurancePrice\": 6.1,\n  \"imageUrl\": \"https://res.cloudinary.com/de6b0q56z/image/upload/v1766094627/Tesla_Model_Y_2024_iytmdk.png\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/cars/25",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"cars",
+						"25"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

@@ -6,6 +6,9 @@ import com.maiboroda.GoGo.dto.CarResponseDto;
 import com.maiboroda.GoGo.entity.Car;
 import com.maiboroda.GoGo.mapper.CarMapper;
 import com.maiboroda.GoGo.repository.CarRepository;
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -14,6 +17,7 @@ import java.util.List;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class CarServiceImpl implements CarService {
     private final CarRepository carRepository;
     private final CarMapper carMapper;
@@ -21,20 +25,15 @@ public class CarServiceImpl implements CarService {
     @Value("${gogo.settings.random-number}")
     private int randomNumber;
 
-    public CarServiceImpl(CarRepository carRepository, CarMapper carMapper) {
-        this.carRepository = carRepository;
-        this.carMapper = carMapper;
-    }
-
     @Override
-    public List<Car> getAllCars() {
+    public List<CarResponseDto> getAllCars() {
         List<Car> cars = carRepository.findAll();
         log.info("Successfully add {} random car", cars.size());
-        return cars;
+        return carMapper.toResponseDtoList(cars);
     }
 
     @Override
-    public List<Car> getRandomCars() {
+    public List<CarResponseDto> getRandomCars() {
         if (randomNumber < 0) {
             throw new IllegalArgumentException("Invalid Number, it must be positive");
         }
@@ -42,8 +41,8 @@ public class CarServiceImpl implements CarService {
         if (randomNumber > cars.size()) {
             throw new IllegalArgumentException("Invalid Number, it must be from 1 to " + cars.size());
         }
-        log.info("Successfully add{}random cars", cars.size());
-        return cars;
+        log.info("Successfully add {} random cars", cars.size());
+        return carMapper.toResponseDtoList(cars);
     }
 
     @Override
@@ -53,5 +52,16 @@ public class CarServiceImpl implements CarService {
         log.info("Successfully add car to db: {} {} {}", savedCar.getBrand(), savedCar.getModel(), savedCar.getId());
 
         return carMapper.toResponseDto(savedCar);
+    }
+
+    @Transactional
+    @Override
+    public CarResponseDto updateCarById(CarRequestDto carRequestDto, long id) {
+        Car existingCar = carRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Car not found by id: " + id));
+        carMapper.updateCarFromDto(carRequestDto, existingCar);
+        Car updatedCar = carRepository.save(existingCar);
+
+        return carMapper.toResponseDto(updatedCar);
     }
 }
