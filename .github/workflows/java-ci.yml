@@ -7,6 +7,11 @@ on:
     types: [opened, synchronize, reopened]
   workflow_dispatch:
 
+permissions:
+  checks: write
+  pull-requests: write
+  contents: read
+
 jobs:
   build-and-analyze:
     name: Build, Test and Analyze
@@ -31,7 +36,14 @@ jobs:
           key: ${{ runner.os }}-sonar-${{ hashFiles('**/build.gradle') }}
           restore-keys: ${{ runner.os }}-sonar-
 
-
+      - name: Cache Gradle packages
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: ${{ runner.os }}-gradle-
 
       - name: Validate Gradle Wrapper
         uses: gradle/wrapper-validation-action@v2
