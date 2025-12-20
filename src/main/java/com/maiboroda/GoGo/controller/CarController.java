@@ -46,6 +46,13 @@ public class CarController {
         return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<CarResponseDto> updateCar(@Valid @RequestBody CarRequestDto carRequestDto, @PathVariable Long id) {
+        log.info("Updating car with id: {}", id);
+        CarResponseDto responseDto = carService.updateCarById(carRequestDto, id);
+        return ResponseEntity.ok(responseDto);
+    }
+
     @GetMapping("/country")
     public ResponseEntity<List<CarResponseDto>> findCarsByCountry(
             @RequestParam String countryName) {
@@ -55,10 +62,6 @@ public class CarController {
         } catch (IllegalArgumentException exception) {
             return ResponseEntity.badRequest().body(List.of());
         }
-    @PutMapping("/{id}")
-    public ResponseEntity<CarResponseDto> updateCar(@Valid @RequestBody CarRequestDto carRequestDto, @PathVariable Long id) {
-        log.info("Updating car with id: {}", id);
-        CarResponseDto responseDto = carService.updateCarById(carRequestDto, id);
-        return ResponseEntity.ok(responseDto);
+
     }
 }

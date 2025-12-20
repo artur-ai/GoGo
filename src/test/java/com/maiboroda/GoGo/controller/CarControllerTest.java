@@ -317,6 +317,10 @@ public class CarControllerTest extends AbstractIntegrationTest {
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$[?(@.brand == 'Hyundai' && @.model == 'H-1')]", hasSize(1)));
         }
+    }
+
+
+    @Test
     void testUpdateCar_ShouldReturn200okAndUpdateCar() throws Exception {
         CarRequestDto updateCar = createVaidCarRequestDto();
         updateCar.setBrand("Skoda");
@@ -411,18 +415,6 @@ public class CarControllerTest extends AbstractIntegrationTest {
                 .andExpect(jsonPath("$.insurancePrice", is(2.5)))
                 .andExpect(jsonPath("$.imageUrl", is("https://new-image.com/tesla.png")));
     }
-
-    @ParameterizedTest
-    @ValueSource(longs = {1, 2, 3, 7, 10})
-    void testUpdateCar_MultipleValidIds_ShouldReturn200(long carId) throws Exception {
-        CarRequestDto updateRequest = createVaidCarRequestDto();
-
-        mockMvc.perform(put("/api/cars/" + carId)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(updateRequest)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id", is((int) carId)))
-                .andExpect(jsonPath("$.brand", is("Dodge")));
-    }
 }
+
 

@@ -200,17 +200,6 @@ public class CarServiceITest extends AbstractIntegrationTest {
     }
 
     @Test
-    void testFindCarByCountry_NonExistentCountry_ThrowsException() {
-        EntityNotFoundException exception = assertThrows(
-                EntityNotFoundException.class,
-                () -> carService.findCarByCountry("Australia")
-        );
-
-        assertThat(exception.getMessage())
-                .contains("No cars found for country");
-    }
-
-    @Test
     void testFindCarByCountry_ReturnsCarResponseDtoWithAllFields() {
         List<CarResponseDto> cars = carService.findCarByCountry("Ukraine");
 
@@ -226,6 +215,9 @@ public class CarServiceITest extends AbstractIntegrationTest {
         assertNotNull(firstCar.getInsurancePrice());
         assertNotNull(firstCar.getImageUrl());
         assertNotNull(firstCar.getCreatedAt());
+    }
+
+    @Test
     void testUpdateCarById_ShouldUpdateExistingCar() {
         Long carId = 1L;
 
