@@ -200,6 +200,24 @@ public class CarServiceITest extends AbstractIntegrationTest {
     }
 
     @Test
+    void testFindCarByCountry_ReturnsCarResponseDtoWithAllFields() {
+        List<CarResponseDto> cars = carService.findCarByCountry("Ukraine");
+
+        CarResponseDto firstCar = cars.get(0);
+        assertNotNull(firstCar.getId());
+        assertNotNull(firstCar.getBrand());
+        assertNotNull(firstCar.getModel());
+        assertNotNull(firstCar.getYear());
+        assertNotNull(firstCar.getFuelType());
+        assertNotNull(firstCar.getEngine());
+        assertNotNull(firstCar.getPricePerMinute());
+        assertNotNull(firstCar.getPricePerDay());
+        assertNotNull(firstCar.getInsurancePrice());
+        assertNotNull(firstCar.getImageUrl());
+        assertNotNull(firstCar.getCreatedAt());
+    }
+
+    @Test
     void testUpdateCarById_ShouldUpdateExistingCar() {
         Long carId = 1L;
 
@@ -268,23 +286,5 @@ public class CarServiceITest extends AbstractIntegrationTest {
         assertEquals(originalCreatedAt, updatedCar.getCreatedAt());
         assertEquals("Updated Brand", updatedCar.getBrand());
         assertEquals("Updated Model", updatedCar.getModel());
-    }
-
-    @Test
-    void testFindCarByCountry_ReturnsCarResponseDtoWithAllFields() {
-        List<CarResponseDto> cars = carService.findCarByCountry("Ukraine");
-
-        CarResponseDto firstCar = cars.get(0);
-        assertNotNull(firstCar.getId());
-        assertNotNull(firstCar.getBrand());
-        assertNotNull(firstCar.getModel());
-        assertNotNull(firstCar.getYear());
-        assertNotNull(firstCar.getFuelType());
-        assertNotNull(firstCar.getEngine());
-        assertNotNull(firstCar.getPricePerMinute());
-        assertNotNull(firstCar.getPricePerDay());
-        assertNotNull(firstCar.getInsurancePrice());
-        assertNotNull(firstCar.getImageUrl());
-        assertNotNull(firstCar.getCreatedAt());
     }
 }
