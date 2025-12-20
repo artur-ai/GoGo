@@ -4,9 +4,12 @@ package com.maiboroda.GoGo.service;
 import com.maiboroda.GoGo.dto.CarRequestDto;
 import com.maiboroda.GoGo.dto.CarResponseDto;
 import com.maiboroda.GoGo.entity.Car;
+import com.maiboroda.GoGo.entity.Country;
 import com.maiboroda.GoGo.mapper.CarMapper;
 import com.maiboroda.GoGo.repository.CarRepository;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -15,17 +18,14 @@ import java.util.List;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class CarServiceImpl implements CarService {
     private final CarRepository carRepository;
     private final CarMapper carMapper;
+    private final CountryService countryService;
 
     @Value("${gogo.settings.random-number}")
     private int randomNumber;
-
-    public CarServiceImpl(CarRepository carRepository, CarMapper carMapper) {
-        this.carRepository = carRepository;
-        this.carMapper = carMapper;
-    }
 
     @Override
     public List<Car> getAllCars() {
@@ -56,8 +56,11 @@ public class CarServiceImpl implements CarService {
         return carMapper.toResponseDto(savedCar);
     }
 
+
     @Override
+    @Transactional
     public List<CarResponseDto> findCarByCountry(String countryName) {
+        countryService.getCountryByName(countryName);
         List<Car> cars = carRepository.findByCountriesName(countryName);
 
         if (cars.isEmpty()) {
