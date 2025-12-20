@@ -377,7 +377,7 @@ public class CarControllerTest extends AbstractIntegrationTest {
     @Test
     @DataSet(value = "datasets/cars.yml", cleanBefore = true)
     void updateCarById_NotFound() throws Exception {
-        CarRequestDto requestDto = new CarRequestDto();
+        CarRequestDto requestDto = createVaidCarRequestDto();
         requestDto.setBrand("Test");
         requestDto.setModel("Test");
         requestDto.setYear(2023);

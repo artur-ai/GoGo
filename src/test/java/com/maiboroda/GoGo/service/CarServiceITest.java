@@ -207,7 +207,7 @@ public class CarServiceITest extends AbstractIntegrationTest {
         assertNotNull(firstCar.getId());
         assertNotNull(firstCar.getBrand());
         assertNotNull(firstCar.getModel());
-        assertNotNull(firstCar.getYear());
+        assertNotEquals(0, firstCar.getYear());
         assertNotNull(firstCar.getFuelType());
         assertNotNull(firstCar.getEngine());
         assertNotNull(firstCar.getPricePerMinute());
