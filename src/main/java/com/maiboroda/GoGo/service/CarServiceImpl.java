@@ -28,14 +28,14 @@ public class CarServiceImpl implements CarService {
     private int randomNumber;
 
     @Override
-    public List<Car> getAllCars() {
+    public List<CarResponseDto> getAllCars() {
         List<Car> cars = carRepository.findAll();
         log.info("Successfully add {} random car", cars.size());
-        return cars;
+        return carMapper.toResponseDtoList(cars);
     }
 
     @Override
-    public List<Car> getRandomCars() {
+    public List<CarResponseDto> getRandomCars() {
         if (randomNumber < 0) {
             throw new IllegalArgumentException("Invalid Number, it must be positive");
         }
@@ -43,8 +43,8 @@ public class CarServiceImpl implements CarService {
         if (randomNumber > cars.size()) {
             throw new IllegalArgumentException("Invalid Number, it must be from 1 to " + cars.size());
         }
-        log.info("Successfully add{}random cars", cars.size());
-        return cars;
+        log.info("Successfully add {} random cars", cars.size());
+        return carMapper.toResponseDtoList(cars);
     }
 
     @Override
@@ -71,5 +71,16 @@ public class CarServiceImpl implements CarService {
         return cars.stream()
                 .map(carMapper::toResponseDto)
                 .toList();
+    }
+}
+    @Transactional
+    @Override
+    public CarResponseDto updateCarById(CarRequestDto carRequestDto, long id) {
+        Car existingCar = carRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Car not found by id: " + id));
+        carMapper.updateCarFromDto(carRequestDto, existingCar);
+        Car updatedCar = carRepository.save(existingCar);
+
+        return carMapper.toResponseDto(updatedCar);
     }
 }

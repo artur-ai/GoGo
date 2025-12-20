@@ -16,6 +16,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -41,7 +42,7 @@ public class CarServiceITest extends AbstractIntegrationTest {
 
     @Test
     void testGetAllCars_ReturnCorrectSize() {
-        List<Car> cars = carService.getAllCars();
+        List<CarResponseDto> cars = carService.getAllCars();
 
         assertFalse(cars.isEmpty());
         assertEquals(12, cars.size());
@@ -49,8 +50,8 @@ public class CarServiceITest extends AbstractIntegrationTest {
 
     @Test
     void testReturnFirstCarWithAllFields() {
-        List<Car> cars = carService.getAllCars();
-        Car firstCar = cars.get(0);
+        List<CarResponseDto> cars = carService.getAllCars();
+        CarResponseDto firstCar = cars.get(0);
 
         assertEquals(1, firstCar.getId());
         assertEquals("Skoda", firstCar.getBrand());
@@ -63,7 +64,7 @@ public class CarServiceITest extends AbstractIntegrationTest {
 
     @Test
     void testGetThreeRandomCar() {
-        List<Car> cars = carService.getRandomCars();
+        List<CarResponseDto> cars = carService.getRandomCars();
 
         assertFalse(cars.isEmpty());
         assertEquals(3, cars.size());
@@ -71,9 +72,9 @@ public class CarServiceITest extends AbstractIntegrationTest {
 
     @Test
     void testGetAllCars_ContainsExpectedBrands() {
-        List<Car> cars = carService.getAllCars();
+        List<CarResponseDto> cars = carService.getAllCars();
         Set<String> brands = cars.stream()
-                .map(Car::getBrand)
+                .map(CarResponseDto::getBrand)
                 .collect(Collectors.toSet());
 
         assertThat(brands).containsExactlyInAnyOrder(
@@ -84,9 +85,9 @@ public class CarServiceITest extends AbstractIntegrationTest {
 
     @Test
     void testGetAllCars_ContainsExpectedFuelTypes() {
-        List<Car> cars = carService.getAllCars();
+        List<CarResponseDto> cars = carService.getAllCars();
         Set<String> fuelTypes = cars.stream()
-                .map(Car::getFuelType)
+                .map(CarResponseDto::getFuelType)
                 .collect(Collectors.toSet());
 
         assertThat(fuelTypes).containsExactlyInAnyOrder(
@@ -96,7 +97,7 @@ public class CarServiceITest extends AbstractIntegrationTest {
 
     @Test
     void testServiceUsesRepository() {
-        List<Car> serviceCars = carService.getAllCars();
+        List<CarResponseDto> serviceCars = carService.getAllCars();
         List<Car> repositoryCars = carRepository.findAll();
 
         assertEquals(repositoryCars.size(), serviceCars.size());
@@ -106,7 +107,7 @@ public class CarServiceITest extends AbstractIntegrationTest {
     void testGetRandomCars_UsesRepositoryMethod() {
         ReflectionTestUtils.setField(carService, "randomNumber", 3);
 
-        List<Car> serviceCars = carService.getRandomCars();
+        List<CarResponseDto> serviceCars = carService.getRandomCars();
         List<Car> repositoryCars = carRepository.getRandomCars(3);
 
         assertEquals(repositoryCars.size(), serviceCars.size());
@@ -225,5 +226,73 @@ public class CarServiceITest extends AbstractIntegrationTest {
         assertNotNull(firstCar.getInsurancePrice());
         assertNotNull(firstCar.getImageUrl());
         assertNotNull(firstCar.getCreatedAt());
+    void testUpdateCarById_ShouldUpdateExistingCar() {
+        Long carId = 1L;
+
+        CarRequestDto updateRequest = new CarRequestDto(
+                "Skoda",
+                "Fabia Updated",
+                2015,
+                "Petrol",
+                "1.4L",
+                new BigDecimal("3.5"),
+                new BigDecimal("800"),
+                new BigDecimal("1.2"),
+                "https://new-image-url.com/updated.png"
+        );
+
+        CarResponseDto result = carService.updateCarById(updateRequest, carId);
+
+        assertNotNull(result);
+        assertEquals(carId, result.getId());
+        assertEquals("Skoda", result.getBrand());
+        assertEquals("Fabia Updated", result.getModel());
+        assertEquals(2015, result.getYear());
+        assertEquals("1.4L", result.getEngine());
+        assertEquals(new BigDecimal("3.5"), result.getPricePerMinute());
+        assertEquals(new BigDecimal("800"), result.getPricePerDay());
+        assertEquals(new BigDecimal("1.2"), result.getInsurancePrice());
+
+        Car updatedCar = carRepository.findById(carId).orElseThrow();
+        assertEquals("Fabia Updated", updatedCar.getModel());
+        assertEquals(2015, updatedCar.getYear());
+        assertEquals("1.4L", updatedCar.getEngine());
+        assertNotNull(updatedCar.getCreatedAt());
+    }
+
+    @Test
+    void testUpdateCarById_ShouldThrowException_WhenCarNotFound() {
+        Long nonExistentId = 999L;
+        CarRequestDto updateRequest = createValidCarRequestDto();
+
+        assertThrows(EntityNotFoundException.class,
+                () -> carService.updateCarById(updateRequest, nonExistentId));
+    }
+
+    @Test
+    void testUpdateCarById_ShouldNotChangeIdAndCreatedAt() {
+        Long carId = 2L;
+        Car originalCar = carRepository.findById(carId).orElseThrow();
+        LocalDateTime originalCreatedAt = originalCar.getCreatedAt();
+
+        CarRequestDto updateRequest = new CarRequestDto(
+                "Updated Brand",
+                "Updated Model",
+                2020,
+                "Diesel",
+                "2.0L",
+                new BigDecimal("10.0"),
+                new BigDecimal("2000"),
+                new BigDecimal("5.0"),
+                "https://updated-url.com/car.png"
+        );
+
+        carService.updateCarById(updateRequest, carId);
+
+        Car updatedCar = carRepository.findById(carId).orElseThrow();
+        assertEquals(carId, updatedCar.getId());
+        assertEquals(originalCreatedAt, updatedCar.getCreatedAt());
+        assertEquals("Updated Brand", updatedCar.getBrand());
+        assertEquals("Updated Model", updatedCar.getModel());
     }
 }

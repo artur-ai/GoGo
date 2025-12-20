@@ -3,7 +3,7 @@ plugins {
     id 'org.springframework.boot' version '3.4.0'
     id 'io.spring.dependency-management' version '1.1.7'
     id 'jacoco'
-    id 'org.sonarqube' version '5.1.0.4882'
+    id 'org.sonarqube' version '7.2.2.6593'
 }
 
 group = 'com.maiboroda'
@@ -56,20 +56,6 @@ dependencies {
     testImplementation "com.github.database-rider:rider-junit5:${databaseRiderVersion}"
 }
 
-sonar {
-    properties {
-        property "sonar.projectKey", "artur-ai_GoGo"
-        property "sonar.organization", "artur-ai"
-        property "sonar.host.url", "https://sonarcloud.io"
-
-        property "sonar.coverage.jacoco.xmlReportPaths", "${buildDir}/reports/jacoco/test/jacocoTestReport.xml"
-
-        property "sonar.exclusions", "**/dto/**, **/entity/**, **/config/**"
-
-        property "sonar.sourceEncoding", "UTF-8"
-    }
-}
-
 jacoco {
     toolVersion = "0.8.12"
 }
@@ -81,14 +67,28 @@ test {
 
 jacocoTestReport {
     dependsOn test
+
     reports {
         xml.required = true
         html.required = true
         csv.required = false
     }
+
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it, exclude: [
+                    '**/dto/**',
+                    '**/entity/**',
+                    '**/config/**',
+                    '**/GoGoApplication.class'
+            ])
+        }))
+    }
 }
 
 jacocoTestCoverageVerification {
+    dependsOn jacocoTestReport
+
     violationRules {
         rule {
             limit {
@@ -96,6 +96,51 @@ jacocoTestCoverageVerification {
             }
         }
     }
+
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it, exclude: [
+                    '**/dto/**',
+                    '**/entity/**',
+                    '**/config/**',
+                    '**/GoGoApplication.class'
+            ])
+        }))
+    }
 }
 
-tasks.sonar.dependsOn jacocoTestReport
+sonar {
+    properties {
+        property "sonar.projectKey", "artur-ai_GoGo"
+        property "sonar.organization", "artur-ai"
+        property "sonar.host.url", "https://sonarcloud.io"
+
+        property "sonar.sourceEncoding", "UTF-8"
+        property "sonar.java.source", "23"
+        property "sonar.java.target", "23"
+
+        property "sonar.sources", "src/main/java"
+        property "sonar.tests", "src/test/java"
+
+        property "sonar.java.binaries", "${project.layout.buildDirectory.get()}/classes/java/main"
+        property "sonar.java.test.binaries", "${project.layout.buildDirectory.get()}/classes/java/test"
+
+        property "sonar.coverage.jacoco.xmlReportPaths", "${project.layout.buildDirectory.get()}/reports/jacoco/test/jacocoTestReport.xml"
+
+        property "sonar.exclusions", "**/dto/**, **/entity/**, **/config/**, **/GoGoApplication.java"
+        property "sonar.coverage.exclusions", "**/dto/**, **/entity/**, **/config/**, **/GoGoApplication.java"
+
+        property "sonar.java.coveragePlugin", "jacoco"
+        property "sonar.verbose", "true"
+    }
+}
+
+tasks.named('sonar') {
+    dependsOn jacocoTestReport
+}
+
+tasks.register('verify') {
+    dependsOn test, jacocoTestReport, jacocoTestCoverageVerification
+    description = 'Runs tests, generates JaCoCo report, and verifies coverage'
+    group = 'verification'
+}
