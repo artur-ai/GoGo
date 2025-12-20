@@ -226,7 +226,7 @@ public class CarServiceITest extends AbstractIntegrationTest {
         assertThat(exception.getMessage())
                 .contains("No cars found for country");
     }
-    
+
     @Test
     void testUpdateCarById_ShouldThrowException_WhenCarNotFound() {
         Long nonExistentId = 999L;
