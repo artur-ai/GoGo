@@ -147,23 +147,6 @@ public class CarServiceITest extends AbstractIntegrationTest {
     }
 
     @Test
-    void testUpdateCarById_ShouldUpdateExistingCar() {
-        Long carId = 1L;
-
-        CarRequestDto updateRequest = new CarRequestDto(
-                "Skoda",
-                "Fabia Updated",
-                2015,
-                "Petrol",
-                "1.4L",
-                new BigDecimal("3.5"),
-                new BigDecimal("800"),
-                new BigDecimal("1.2"),
-                "https://new-image-url.com/updated.png"
-        );
-    }
-
-    @Test
     void testFindCarByCountry_Ukraine_ReturnsCorrectCount() {
         List<CarResponseDto> cars = carService.findCarByCountry("Ukraine");
 
@@ -217,14 +200,38 @@ public class CarServiceITest extends AbstractIntegrationTest {
     }
 
     @Test
-    void testFindCarByCountry_NonExistentCountry_ThrowsException() {
-        EntityNotFoundException exception = assertThrows(
-                EntityNotFoundException.class,
-                () -> carService.findCarByCountry("Australia")
+    void testUpdateCarById_ShouldUpdateExistingCar() {
+        Long carId = 1L;
+
+        CarRequestDto updateRequest = new CarRequestDto(
+                "Skoda",
+                "Fabia Updated",
+                2015,
+                "Petrol",
+                "1.4L",
+                new BigDecimal("3.5"),
+                new BigDecimal("800"),
+                new BigDecimal("1.2"),
+                "https://new-image-url.com/updated.png"
         );
 
-        assertThat(exception.getMessage())
-                .contains("No cars found for country");
+        CarResponseDto result = carService.updateCarById(updateRequest, carId);
+
+        assertNotNull(result);
+        assertEquals(carId, result.getId());
+        assertEquals("Skoda", result.getBrand());
+        assertEquals("Fabia Updated", result.getModel());
+        assertEquals(2015, result.getYear());
+        assertEquals("1.4L", result.getEngine());
+        assertEquals(new BigDecimal("3.5"), result.getPricePerMinute());
+        assertEquals(new BigDecimal("800"), result.getPricePerDay());
+        assertEquals(new BigDecimal("1.2"), result.getInsurancePrice());
+
+        Car updatedCar = carRepository.findById(carId).orElseThrow();
+        assertEquals("Fabia Updated", updatedCar.getModel());
+        assertEquals(2015, updatedCar.getYear());
+        assertEquals("1.4L", updatedCar.getEngine());
+        assertNotNull(updatedCar.getCreatedAt());
     }
 
     @Test

@@ -4,6 +4,7 @@ package com.maiboroda.GoGo.service;
 import com.maiboroda.GoGo.dto.CarRequestDto;
 import com.maiboroda.GoGo.dto.CarResponseDto;
 import com.maiboroda.GoGo.entity.Car;
+import com.maiboroda.GoGo.entity.Country;
 import com.maiboroda.GoGo.mapper.CarMapper;
 import com.maiboroda.GoGo.repository.CarRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -22,6 +23,7 @@ import java.util.List;
 public class CarServiceImpl implements CarService {
     private final CarRepository carRepository;
     private final CarMapper carMapper;
+    private final CountryService countryService;
 
     @Value("${gogo.settings.random-number}")
     private int randomNumber;
@@ -55,8 +57,22 @@ public class CarServiceImpl implements CarService {
         return carMapper.toResponseDto(savedCar);
     }
 
+    @Transactional
     @Override
+    public CarResponseDto updateCarById(CarRequestDto carRequestDto, long id) {
+        Car existingCar = carRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Car not found by id: " + id));
+        carMapper.updateCarFromDto(carRequestDto, existingCar);
+        Car updatedCar = carRepository.save(existingCar);
+
+        return carMapper.toResponseDto(updatedCar);
+    }
+
+
+    @Override
+    @Transactional
     public List<CarResponseDto> findCarByCountry(String countryName) {
+        countryService.getCountryByName(countryName);
         List<Car> cars = carRepository.findByCountriesName(countryName);
 
         if (cars.isEmpty()) {
@@ -67,16 +83,5 @@ public class CarServiceImpl implements CarService {
         return cars.stream()
                 .map(carMapper::toResponseDto)
                 .toList();
-    }
-
-    @Transactional
-    @Override
-    public CarResponseDto updateCarById(CarRequestDto carRequestDto, long id) {
-        Car existingCar = carRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Car not found by id: " + id));
-        carMapper.updateCarFromDto(carRequestDto, existingCar);
-        Car updatedCar = carRepository.save(existingCar);
-
-        return carMapper.toResponseDto(updatedCar);
     }
 }
