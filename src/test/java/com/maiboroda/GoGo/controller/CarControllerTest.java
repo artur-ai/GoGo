@@ -4,7 +4,11 @@ import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.junit5.api.DBRider;
 import com.maiboroda.GoGo.AbstractIntegrationTest;
 import com.maiboroda.GoGo.dto.CarRequestDto;
+import com.maiboroda.GoGo.dto.CarResponseDto;
+import com.maiboroda.GoGo.entity.Car;
+import com.maiboroda.GoGo.repository.CarRepository;
 import com.maiboroda.GoGo.service.CarService;
+import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -17,9 +21,15 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.math.BigDecimal;
+import java.util.Optional;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -35,6 +45,9 @@ public class CarControllerTest extends AbstractIntegrationTest {
 
     @Autowired
     private CarService carService;
+
+    @Autowired
+    private CarRepository carRepository;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -319,7 +332,6 @@ public class CarControllerTest extends AbstractIntegrationTest {
         }
     }
 
-
     @Test
     void testUpdateCar_ShouldReturn200okAndUpdateCar() throws Exception {
         CarRequestDto updateCar = createVaidCarRequestDto();
@@ -337,6 +349,43 @@ public class CarControllerTest extends AbstractIntegrationTest {
                 .andExpect(jsonPath("$.year", is(2015)))
                 .andExpect(jsonPath("$.engine", is("2.4")))
                 .andExpect(jsonPath("$.pricePerDay", is(1200.0)));
+    }
+
+    @Test
+    @DataSet(value = "datasets/cars.yml", cleanBefore = true)
+    void updateCarById_Success() throws Exception {
+        CarRequestDto requestDto = new CarRequestDto();
+        requestDto.setBrand("Updated Brand");
+        requestDto.setModel("Updated Model");
+        requestDto.setYear(2023);
+        requestDto.setFuelType("Petrol");
+        requestDto.setEngine("2.0");
+        requestDto.setPricePerMinute(BigDecimal.valueOf(1.5));
+        requestDto.setPricePerDay(BigDecimal.valueOf(50.0));
+        requestDto.setInsurancePrice(BigDecimal.valueOf(10.0));
+        requestDto.setImageUrl("http://example.com/updated.jpg");
+
+        mockMvc.perform(put("/api/cars/{id}", 1L)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(requestDto)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.brand").value("Updated Brand"))
+                .andExpect(jsonPath("$.model").value("Updated Model"));
+    }
+
+    @Test
+    @DataSet(value = "datasets/cars.yml", cleanBefore = true)
+    void updateCarById_NotFound() throws Exception {
+        CarRequestDto requestDto = new CarRequestDto();
+        requestDto.setBrand("Test");
+        requestDto.setModel("Test");
+        requestDto.setYear(2023);
+
+        mockMvc.perform(put("/api/cars/999")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(requestDto)))
+                .andExpect(status().isNotFound());
     }
 
     @Test
