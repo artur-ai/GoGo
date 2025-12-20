@@ -5,11 +5,14 @@ import com.github.database.rider.junit5.api.DBRider;
 import com.maiboroda.GoGo.AbstractIntegrationTest;
 import com.maiboroda.GoGo.dto.CarRequestDto;
 import com.maiboroda.GoGo.dto.CarResponseDto;
+import com.maiboroda.GoGo.dto.PagedResponse;
 import com.maiboroda.GoGo.entity.Car;
 import com.maiboroda.GoGo.repository.CarRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -42,16 +45,21 @@ public class CarServiceITest extends AbstractIntegrationTest {
 
     @Test
     void testGetAllCars_ReturnCorrectSize() {
-        List<CarResponseDto> cars = carService.getAllCars();
+        Pageable pageable = PageRequest.of(0, 20);
 
-        assertFalse(cars.isEmpty());
-        assertEquals(12, cars.size());
+        PagedResponse<CarResponseDto> response = carService.getAllCars(pageable);
+
+        assertNotNull(response);
+        assertFalse(response.getContent().isEmpty());
+        assertEquals(12, response.getTotalElements());
     }
 
     @Test
     void testReturnFirstCarWithAllFields() {
-        List<CarResponseDto> cars = carService.getAllCars();
-        CarResponseDto firstCar = cars.get(0);
+        Pageable pageable = PageRequest.of(0, 10);
+        PagedResponse<CarResponseDto> response = carService.getAllCars(pageable);
+
+        CarResponseDto firstCar = response.getContent().get(0);
 
         assertEquals(1, firstCar.getId());
         assertEquals("Skoda", firstCar.getBrand());
@@ -72,8 +80,10 @@ public class CarServiceITest extends AbstractIntegrationTest {
 
     @Test
     void testGetAllCars_ContainsExpectedBrands() {
-        List<CarResponseDto> cars = carService.getAllCars();
-        Set<String> brands = cars.stream()
+        Pageable pageable = PageRequest.of(0, 50);
+        PagedResponse<CarResponseDto> response = carService.getAllCars(pageable);
+
+        Set<String> brands = response.getContent().stream()
                 .map(CarResponseDto::getBrand)
                 .collect(Collectors.toSet());
 
@@ -85,8 +95,10 @@ public class CarServiceITest extends AbstractIntegrationTest {
 
     @Test
     void testGetAllCars_ContainsExpectedFuelTypes() {
-        List<CarResponseDto> cars = carService.getAllCars();
-        Set<String> fuelTypes = cars.stream()
+        Pageable pageable = PageRequest.of(0, 50);
+        PagedResponse<CarResponseDto> response = carService.getAllCars(pageable);
+
+        Set<String> fuelTypes = response.getContent().stream()
                 .map(CarResponseDto::getFuelType)
                 .collect(Collectors.toSet());
 
@@ -96,11 +108,16 @@ public class CarServiceITest extends AbstractIntegrationTest {
     }
 
     @Test
-    void testServiceUsesRepository() {
-        List<CarResponseDto> serviceCars = carService.getAllCars();
-        List<Car> repositoryCars = carRepository.findAll();
+    void testPaginationMetadata() {
+        int pageSize = 5;
+        Pageable pageable = PageRequest.of(0, pageSize);
 
-        assertEquals(repositoryCars.size(), serviceCars.size());
+        PagedResponse<CarResponseDto> response = carService.getAllCars(pageable);
+
+        assertEquals(0, response.getPageNumber());
+        assertEquals(pageSize, response.getPageSize());
+        assertTrue(response.getTotalElements() > 0);
+        assertEquals(3, response.getTotalPages());
     }
 
     @Test

@@ -3,6 +3,7 @@ package com.maiboroda.GoGo.service;
 
 import com.maiboroda.GoGo.dto.CarRequestDto;
 import com.maiboroda.GoGo.dto.CarResponseDto;
+import com.maiboroda.GoGo.dto.PagedResponse;
 import com.maiboroda.GoGo.entity.Car;
 import com.maiboroda.GoGo.mapper.CarMapper;
 import com.maiboroda.GoGo.repository.CarRepository;
@@ -11,7 +12,10 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -26,10 +30,12 @@ public class CarServiceImpl implements CarService {
     private int randomNumber;
 
     @Override
-    public List<CarResponseDto> getAllCars() {
-        List<Car> cars = carRepository.findAll();
-        log.info("Successfully add {} random car", cars.size());
-        return carMapper.toResponseDtoList(cars);
+    @Transactional
+    public PagedResponse<CarResponseDto> getAllCars(Pageable pageable) {
+        Page<Car> carPage = carRepository.findAll(pageable);
+        List<CarResponseDto> cars = carMapper.toResponseDtoList(carPage.getContent());
+        log.info("Retrieved {} cars for page {}", cars.size(), pageable.getPageNumber());
+        return PagedResponse.of(carPage, cars);
     }
 
     @Override
