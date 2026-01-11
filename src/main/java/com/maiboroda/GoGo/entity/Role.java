@@ -1,4 +1,6 @@
 package com.maiboroda.GoGo.entity;
 
-public class Role {
+public enum Role {
+    ROLE_ADMIN,
+    ROLE_USER
 }
