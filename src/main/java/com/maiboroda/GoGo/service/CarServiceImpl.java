@@ -31,7 +31,7 @@ public class CarServiceImpl implements CarService {
     @Override
     public List<CarResponseDto> getAllCars() {
         List<Car> cars = carRepository.findAll();
-        log.info("Successfully add {} random car", cars.size());
+        log.info("Successfully get car {} from data base", cars.size());
         return carMapper.toResponseDtoList(cars);
     }
 

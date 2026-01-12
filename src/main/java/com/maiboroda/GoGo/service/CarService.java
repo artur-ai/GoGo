@@ -11,7 +11,6 @@ public interface CarService {
     List<CarResponseDto> getRandomCars();
     CarResponseDto addCar(CarRequestDto carRequestDto);
 
-    @Transactional
     CarResponseDto updateCarById(CarRequestDto carRequestDto, long id);
 
     List<CarResponseDto> findCarByCountry(String countryName);
