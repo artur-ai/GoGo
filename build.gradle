@@ -54,6 +54,8 @@ dependencies {
 
     testImplementation "com.github.database-rider:rider-spring:${databaseRiderVersion}"
     testImplementation "com.github.database-rider:rider-junit5:${databaseRiderVersion}"
+
+    implementation("ch.qos.logback:logback-classic:1.4.14")
 }
 
 jacoco {
