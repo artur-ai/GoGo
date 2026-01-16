@@ -1,4 +1,4 @@
-package com.maiboroda.GoGo.service;
+package com.maiboroda.GoGo.security;
 
 import com.maiboroda.GoGo.entity.User;
 import com.maiboroda.GoGo.repository.UserRepository;

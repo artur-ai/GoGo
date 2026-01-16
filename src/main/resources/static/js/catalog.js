@@ -33,7 +33,7 @@
 
         container.innerHTML = '<h2 style="text-align: center;">Завантаження каталогу...</h2>';
 
-        fetch('/api/cars')
+        fetch('api/cars')
                   .then(response => {
                       if (!response.ok) {
                           throw new Error('HTTP error! Status: ' + response.status);

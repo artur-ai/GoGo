@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/cars")
+@RequestMapping("api/cars")
 @AllArgsConstructor
 @Slf4j
 public class CarController {
