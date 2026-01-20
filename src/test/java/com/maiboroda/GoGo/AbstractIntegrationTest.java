@@ -14,7 +14,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 @SpringBootTest
 @Testcontainers
 @DBRider
-@DBUnit(caseSensitiveTableNames = true)
+@DBUnit(caseSensitiveTableNames = true, cacheConnection = false, leakHunter = false)
 @Import(TestSecurityConfiguration.class)
 public abstract class AbstractIntegrationTest {
 
@@ -37,5 +37,16 @@ public abstract class AbstractIntegrationTest {
 
         registry.add("spring.jpa.hibernate.ddl-auto", () -> "create-drop");
         registry.add("spring.flyway.enabled", () -> "false");
+
+        registry.add("application.security.jwt.secret-key", () ->
+                getEnviroment("SECRET_KEY", "404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970"));
+
+        registry.add("application.security.jwt.expiration", () ->
+                getEnviroment("EXPIRATION", "86400000"));
+    }
+
+    private static String getEnviroment(String name, String defaultValue) {
+        String value = System.getenv(name);
+        return (value != null && !value.isBlank()) ? value : defaultValue;
     }
 }
