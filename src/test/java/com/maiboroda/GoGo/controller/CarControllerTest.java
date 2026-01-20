@@ -1,7 +1,6 @@
 package com.maiboroda.GoGo.controller;
 
 import com.github.database.rider.core.api.dataset.DataSet;
-import com.github.database.rider.junit5.api.DBRider;
 import com.maiboroda.GoGo.AbstractIntegrationTest;
 import com.maiboroda.GoGo.dto.CarRequestDto;
 import com.maiboroda.GoGo.service.CarService;
@@ -12,11 +11,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.math.BigDecimal;
+
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertNotEquals;
@@ -25,9 +26,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 
-@DBRider
 @DataSet("datasets/cars.yml")
-@AutoConfigureMockMvc
+@AutoConfigureMockMvc(addFilters = false)
 @ActiveProfiles("test")
 public class CarControllerTest extends AbstractIntegrationTest {
     @Autowired
@@ -44,7 +44,6 @@ public class CarControllerTest extends AbstractIntegrationTest {
                 new BigDecimal("15.50"), new BigDecimal("1200.00"), new BigDecimal("10.00"),
                 "https://test.com/dodge.png");
     }
-
 
     @Test
     void testReturnAllCars() throws Exception {
@@ -168,6 +167,7 @@ public class CarControllerTest extends AbstractIntegrationTest {
 
     @Test
     @DataSet(value = "datasets/cars.yml", cleanBefore = true)
+    @Sql(statements = "SELECT setval('cars_id_seq', (SELECT MAX(id) FROM cars))", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     void testAddValidCarReturen201Created() throws Exception {
         CarRequestDto requestDto = createVaidCarRequestDto();
 
