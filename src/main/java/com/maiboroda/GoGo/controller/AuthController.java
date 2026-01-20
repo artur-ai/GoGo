@@ -2,8 +2,7 @@ package com.maiboroda.GoGo.controller;
 
 import com.maiboroda.GoGo.dto.AuthenticationRequest;
 import com.maiboroda.GoGo.dto.AuthenticationResponse;
-import com.maiboroda.GoGo.dto.RegisterRequest;
-import com.maiboroda.GoGo.entity.User;
+import com.maiboroda.GoGo.dto.LoginRequest;
 import com.maiboroda.GoGo.service.AuthenticationService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,11 +19,11 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<AuthenticationResponse> register(
-            @RequestBody RegisterRequest registerRequest
+            @RequestBody LoginRequest registerRequest
     ) {
-        log.info("Try register user: {}", registerRequest.getEmail());
+        log.info("Try register user: {}", registerRequest.email());
         AuthenticationResponse authenticationResponse = authenticationService.register(registerRequest);
-        log.info("Successfully register user: {} ", registerRequest.getEmail());
+        log.info("Successfully register user: {} ", registerRequest.email());
         return new ResponseEntity<>(authenticationResponse, HttpStatus.CREATED);
     }
 
@@ -32,9 +31,9 @@ public class AuthController {
     public ResponseEntity<AuthenticationResponse> authentication(
             @RequestBody AuthenticationRequest authenticationRequest
             ) {
-        log.info("Try to login user: {}", authenticationRequest.getEmail());
+        log.info("Try to login user: {}", authenticationRequest.email());
         AuthenticationResponse authenticationResponse = authenticationService.authenticate(authenticationRequest);
-        log.info("Successfully authenticate user: {}", authenticationRequest.getEmail());
+        log.info("Successfully authenticate user: {}", authenticationRequest.email());
         return new ResponseEntity<>(authenticationResponse, HttpStatus.OK);
     }
 

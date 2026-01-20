@@ -52,6 +52,9 @@ jobs:
         run: chmod +x gradlew
 
       - name: Build and Test with JaCoCo
+        env:
+          SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
+          EXPIRATION: 86400000
         run: ./gradlew clean build test jacocoTestReport --info --stacktrace
 
       - name: Verify JaCoCo Report Exists

@@ -2,7 +2,9 @@ package com.maiboroda.GoGo;
 
 import com.github.database.rider.core.api.configuration.DBUnit;
 import com.github.database.rider.junit5.api.DBRider;
+import com.maiboroda.GoGo.config.TestSecurityConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.PostgreSQLContainer;
@@ -12,11 +14,8 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 @SpringBootTest
 @Testcontainers
 @DBRider
-@DBUnit(
-        caseSensitiveTableNames = true,
-        cacheConnection = false,
-        leakHunter = true
-)
+@DBUnit(caseSensitiveTableNames = true)
+@Import(TestSecurityConfiguration.class)
 public abstract class AbstractIntegrationTest {
 
     static {
@@ -25,25 +24,18 @@ public abstract class AbstractIntegrationTest {
     }
 
     @Container
-    static PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>("postgres:15")
+    static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:15-alpine")
             .withDatabaseName("testdb")
             .withUsername("test")
-            .withPassword("test")
-            .withReuse(false);
+            .withPassword("test");
 
     @DynamicPropertySource
-    static void configurateProperties(DynamicPropertyRegistry registry) {
-        registry.add("spring.datasource.url", postgreSQLContainer::getJdbcUrl);
-        registry.add("spring.datasource.username", postgreSQLContainer::getUsername);
-        registry.add("spring.datasource.password", postgreSQLContainer::getPassword);
+    static void properties(DynamicPropertyRegistry registry) {
+        registry.add("spring.datasource.url", postgres::getJdbcUrl);
+        registry.add("spring.datasource.username", postgres::getUsername);
+        registry.add("spring.datasource.password", postgres::getPassword);
 
-        registry.add("spring.flyway.enabled", () -> true);
-        registry.add("spring.flyway.locations", () -> "classpath:db/migration");
-        registry.add("spring.flyway.clean-disabled", () -> false);
-
-        registry.add("spring.jpa.hibernate.ddl-auto", () -> "validate");
-
-        registry.add("spring.datasource.hikari.maximum-pool-size", () -> 10);
-        registry.add("spring.datasource.hikari.minimum-idle", () -> 2);
+        registry.add("spring.jpa.hibernate.ddl-auto", () -> "create-drop");
+        registry.add("spring.flyway.enabled", () -> "false");
     }
 }

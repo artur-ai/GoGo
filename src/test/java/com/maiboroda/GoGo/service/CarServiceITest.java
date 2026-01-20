@@ -7,9 +7,15 @@ import com.maiboroda.GoGo.dto.CarRequestDto;
 import com.maiboroda.GoGo.dto.CarResponseDto;
 import com.maiboroda.GoGo.entity.Car;
 import com.maiboroda.GoGo.repository.CarRepository;
+import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -22,7 +28,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@DBRider
+@ActiveProfiles("test")
 @DataSet("datasets/cars.yml")
 public class CarServiceITest extends AbstractIntegrationTest {
 
@@ -31,6 +37,14 @@ public class CarServiceITest extends AbstractIntegrationTest {
 
     @Autowired
     private CarRepository carRepository;
+
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+
+    @BeforeEach
+    void resetSequence() {
+        jdbcTemplate.execute("ALTER SEQUENCE cars_id_seq RESTART WITH 13");
+    }
 
     private CarRequestDto createValidCarRequestDto() {
         return new CarRequestDto(

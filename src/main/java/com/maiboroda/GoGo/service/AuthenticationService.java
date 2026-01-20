@@ -2,9 +2,9 @@ package com.maiboroda.GoGo.service;
 
 import com.maiboroda.GoGo.dto.AuthenticationRequest;
 import com.maiboroda.GoGo.dto.AuthenticationResponse;
-import com.maiboroda.GoGo.dto.RegisterRequest;
+import com.maiboroda.GoGo.dto.LoginRequest;
 
 public interface AuthenticationService {
-    AuthenticationResponse register(RegisterRequest registerRequest);
+    AuthenticationResponse register(LoginRequest registerRequest);
     AuthenticationResponse authenticate(AuthenticationRequest authenticationRequest);
 }
