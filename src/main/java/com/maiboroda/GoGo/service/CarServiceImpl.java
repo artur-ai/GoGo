@@ -3,15 +3,19 @@ package com.maiboroda.GoGo.service;
 
 import com.maiboroda.GoGo.dto.CarRequestDto;
 import com.maiboroda.GoGo.dto.CarResponseDto;
+import com.maiboroda.GoGo.dto.PagedResponse;
 import com.maiboroda.GoGo.entity.Car;
 import com.maiboroda.GoGo.mapper.CarMapper;
 import com.maiboroda.GoGo.repository.CarRepository;
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -26,15 +30,17 @@ public class CarServiceImpl implements CarService {
     private int randomNumber;
 
     @Override
-    public List<CarResponseDto> getAllCars() {
-        List<Car> cars = carRepository.findAll();
-        log.info("Successfully add {} random car", cars.size());
-        return carMapper.toResponseDtoList(cars);
+    @Transactional(readOnly = true)
+    public PagedResponse<CarResponseDto> getAllCars(Pageable pageable) {
+        Page<Car> carPage = carRepository.findAll(pageable);
+        List<CarResponseDto> cars = carMapper.toResponseDtoList(carPage.getContent());
+        log.info("Retrieved {} cars for page {}", cars.size(), pageable.getPageNumber());
+        return PagedResponse.of(carPage, cars);
     }
 
     @Override
     public List<CarResponseDto> getRandomCars() {
-        if (randomNumber < 0) {
+        if (randomNumber <= 0) {
             throw new IllegalArgumentException("Invalid Number, it must be positive");
         }
         List<Car> cars = carRepository.getRandomCars(randomNumber);
@@ -46,6 +52,7 @@ public class CarServiceImpl implements CarService {
     }
 
     @Override
+    @Transactional
     public CarResponseDto addCar(CarRequestDto carRequestDto) {
         Car car = carMapper.toEntity(carRequestDto);
         Car savedCar = carRepository.save(car);
@@ -54,8 +61,8 @@ public class CarServiceImpl implements CarService {
         return carMapper.toResponseDto(savedCar);
     }
 
-    @Transactional
     @Override
+    @Transactional
     public CarResponseDto updateCarById(CarRequestDto carRequestDto, long id) {
         Car existingCar = carRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Car not found by id: " + id));

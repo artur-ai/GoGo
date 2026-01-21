@@ -2,30 +2,29 @@ package com.maiboroda.GoGo.controller;
 
 import com.maiboroda.GoGo.dto.CarRequestDto;
 import com.maiboroda.GoGo.dto.CarResponseDto;
-import com.maiboroda.GoGo.entity.Car;
+import com.maiboroda.GoGo.dto.PagedResponse;
 import com.maiboroda.GoGo.service.CarService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/cars")
+@RequestMapping("/api/v1/cars")
 @AllArgsConstructor
 @Slf4j
 public class CarController {
     private final CarService carService;
 
     @GetMapping
-    public ResponseEntity<List<CarResponseDto>> gelAllCars() {
-        List<CarResponseDto> cars = carService.getAllCars();
-        log.info("Retrieved {} cars", cars.size());
-        return ResponseEntity.ok(cars);
+    public PagedResponse<CarResponseDto> getAllCars(@PageableDefault(size = 6, page = 0) Pageable pageable) {
+        return carService.getAllCars(pageable);
     }
 
     @GetMapping("/random")
@@ -53,3 +52,4 @@ public class CarController {
         return ResponseEntity.ok(responseDto);
     }
 }
+

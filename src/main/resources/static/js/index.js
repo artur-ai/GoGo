@@ -20,38 +20,28 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
     }
 
-    async function loadFeaturedCars() {
-        const container = document.querySelector('.car-list');
+async function loadFeaturedCars() {
+    const container = document.querySelector('.car-list');
+    if (!container) return;
 
-        if (!container) {
-            console.warn('Container .car-list not found');
-            return;
-        }
+    try {
 
-        container.innerHTML = '<p style="text-align: center; grid-column: 1/-1;">Завантаження...</p>';
+        const response = await fetch('/api/v1/cars/random');
 
-        try {
-            const response = await fetch('/api/cars/random?count=3');
+        if (!response.ok) throw new Error(`Status: ${response.status}`);
 
-            if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
-            }
+        const cars = await response.json();
 
-            const cars = await response.json();
-            console.log('Отримано випадкові машини:', cars);
+        container.innerHTML = cars.length > 0
+            ? cars.map(car => renderCarCard(car)).join('')
+            : '<p>Машини не знайдено</p>';
 
-            if (!cars || cars.length === 0) {
-                container.innerHTML = '<p style="text-align: center; grid-column: 1/-1;">Машини не знайдено</p>';
-                return;
-            }
-
-            const cardsHtml = cars.map(car => renderCarCard(car)).join('');
-            container.innerHTML = cardsHtml;
-
-        } catch (error) {
-            console.error('Помилка завантаження випадкових машин:', error);
-            container.innerHTML = '<p style="text-align: center; color: red; grid-column: 1/-1;">Не вдалося завантажити автомобілі</p>';
-        }
+    } catch (error) {
+        console.error('Error:', error);
+        container.innerHTML = '<p style="color: red;">Помилка завантаження</p>';
     }
+}
+
+
     loadFeaturedCars();
 });
