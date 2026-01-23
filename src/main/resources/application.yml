@@ -12,16 +12,8 @@ spring:
       ddl-auto: validate
 
   flyway:
-#    change ot true after tables are ready
-    enabled: false
+    enabled: true
     baseline-on-migrate: true
-#    del after tables are ready
-    out-of-order: true
-    ignore-migration-patterns:
-        - "*:missing"
-        - "*:ignored"
-        - "*:pending"
-# -------------------------
 
 gogo:
   settings:
