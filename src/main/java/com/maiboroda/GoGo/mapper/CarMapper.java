@@ -14,6 +14,7 @@ public interface CarMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "countries", ignore = true)
     Car toEntity(CarRequestDto carRequestDto);
 
     CarResponseDto toResponseDto(Car car);

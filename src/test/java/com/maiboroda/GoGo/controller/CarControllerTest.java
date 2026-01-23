@@ -4,7 +4,11 @@ import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.junit5.api.DBRider;
 import com.maiboroda.GoGo.AbstractIntegrationTest;
 import com.maiboroda.GoGo.dto.CarRequestDto;
+import com.maiboroda.GoGo.dto.CarResponseDto;
+import com.maiboroda.GoGo.entity.Car;
+import com.maiboroda.GoGo.repository.CarRepository;
 import com.maiboroda.GoGo.service.CarService;
+import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -17,9 +21,15 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.math.BigDecimal;
+import java.util.Optional;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -35,6 +45,9 @@ public class CarControllerTest extends AbstractIntegrationTest {
 
     @Autowired
     private CarService carService;
+
+    @Autowired
+    private CarRepository carRepository;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -70,7 +83,10 @@ public class CarControllerTest extends AbstractIntegrationTest {
     void testReturnAllCarBrands() throws Exception {
         mockMvc.perform(get("/api/cars"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[*].brand", containsInAnyOrder("Skoda", "Ravon", "Volkswagen", "Ford", "Skoda", "Volkswagen", "Nissan", "Audi", "Skoda", "BMW", "Toyota", "Hyundai")));
+                .andExpect(jsonPath("$[*].brand", containsInAnyOrder(
+                        "Skoda", "Ravon", "Volkswagen", "Ford",
+                        "Skoda", "Volkswagen", "Nissan", "Audi",
+                        "Skoda", "BMW", "Toyota", "Hyundai")));
     }
 
     @Test
@@ -218,6 +234,105 @@ public class CarControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
+    void testFindCarsByCountry_Ukraine_Returns6Cars() throws Exception {
+        mockMvc.perform(get("/api/cars/country")
+                        .param("countryName", "Ukraine"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType("application/json"))
+                .andExpect(jsonPath("$", hasSize(6)))
+                .andExpect(jsonPath("$[*].brand", containsInAnyOrder(
+                        "Skoda", "Ravon", "Volkswagen", "Ford", "BMW", "Hyundai")));
+    }
+
+    @Test
+    void testFindCarsByCountry_Poland_Returns7Cars() throws Exception {
+        mockMvc.perform(get("/api/cars/country")
+                        .param("countryName", "Poland"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(7)))
+                .andExpect(jsonPath("$[*].brand", containsInAnyOrder(
+                        "Skoda", "Ravon", "Volkswagen", "Ford", "Volkswagen", "Hyundai", "Skoda")));
+    }
+
+    @Test
+    void testFindCarsByCountry_Germany_Returns7Cars() throws Exception {
+        mockMvc.perform(get("/api/cars/country")
+                        .param("countryName", "Germany"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(7)))
+                .andExpect(jsonPath("$[*].brand", hasItem("Audi")))
+                .andExpect(jsonPath("$[*].brand", hasItem("Nissan")));
+    }
+
+    @Test
+    void testFindCarsByCountry_France_Returns8Cars() throws Exception {
+        mockMvc.perform(get("/api/cars/country")
+                        .param("countryName", "France"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(8)));
+    }
+
+    @Test
+    void testFindCarsByCountry_Spain_Returns4Cars() throws Exception {
+        mockMvc.perform(get("/api/cars/country")
+                        .param("countryName", "Spain"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(4)))
+                .andExpect(jsonPath("$[*].brand", containsInAnyOrder(
+                        "Ford", "Skoda", "Toyota", "Hyundai")));
+    }
+
+    @Test
+    void testFindCarsByCountry_Netherlands_Returns3Cars() throws Exception {
+        mockMvc.perform(get("/api/cars/country")
+                        .param("countryName", "Netherlands"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(3)))
+                .andExpect(jsonPath("$[*].brand", containsInAnyOrder(
+                        "Volkswagen", "Nissan", "Audi")));
+    }
+
+    @Test
+    void testFindCarsByCountry_Japan_Returns3Cars() throws Exception {
+        mockMvc.perform(get("/api/cars/country")
+                        .param("countryName", "Japan"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(3)))
+                .andExpect(jsonPath("$[*].brand", hasItem("Toyota")))
+                .andExpect(jsonPath("$[*].model", hasItem("Leaf")));
+    }
+
+    @Test
+    void testFindCarsByCountry_ReturnsCarWithAllRequiredFields() throws Exception {
+        mockMvc.perform(get("/api/cars/country")
+                        .param("countryName", "Ukraine"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].id", notNullValue()))
+                .andExpect(jsonPath("$[0].brand", notNullValue()))
+                .andExpect(jsonPath("$[0].model", notNullValue()))
+                .andExpect(jsonPath("$[0].year", notNullValue()))
+                .andExpect(jsonPath("$[0].fuelType", notNullValue()))
+                .andExpect(jsonPath("$[0].engine", notNullValue()))
+                .andExpect(jsonPath("$[0].pricePerMinute", isA(Number.class)))
+                .andExpect(jsonPath("$[0].pricePerDay", isA(Number.class)))
+                .andExpect(jsonPath("$[0].insurancePrice", isA(Number.class)))
+                .andExpect(jsonPath("$[0].imageUrl", startsWith("https://")))
+                .andExpect(jsonPath("$[0].createdAt", notNullValue()));
+    }
+
+    @Test
+    void testFindCarsByCountry_HyundaiH1_InMultipleCountries() throws Exception {
+        String[] countries = {"Ukraine", "Poland", "Germany", "France", "Italy", "Spain"};
+
+        for (String country : countries) {
+            mockMvc.perform(get("/api/cars/country")
+                            .param("countryName", country))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$[?(@.brand == 'Hyundai' && @.model == 'H-1')]", hasSize(1)));
+        }
+    }
+
+    @Test
     void testUpdateCar_ShouldReturn200okAndUpdateCar() throws Exception {
         CarRequestDto updateCar = createVaidCarRequestDto();
         updateCar.setBrand("Skoda");
@@ -234,6 +349,43 @@ public class CarControllerTest extends AbstractIntegrationTest {
                 .andExpect(jsonPath("$.year", is(2015)))
                 .andExpect(jsonPath("$.engine", is("2.4")))
                 .andExpect(jsonPath("$.pricePerDay", is(1200.0)));
+    }
+
+    @Test
+    @DataSet(value = "datasets/cars.yml", cleanBefore = true)
+    void updateCarById_Success() throws Exception {
+        CarRequestDto requestDto = new CarRequestDto();
+        requestDto.setBrand("Updated Brand");
+        requestDto.setModel("Updated Model");
+        requestDto.setYear(2023);
+        requestDto.setFuelType("Petrol");
+        requestDto.setEngine("2.0");
+        requestDto.setPricePerMinute(BigDecimal.valueOf(1.5));
+        requestDto.setPricePerDay(BigDecimal.valueOf(50.0));
+        requestDto.setInsurancePrice(BigDecimal.valueOf(10.0));
+        requestDto.setImageUrl("http://example.com/updated.jpg");
+
+        mockMvc.perform(put("/api/cars/{id}", 1L)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(requestDto)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.brand").value("Updated Brand"))
+                .andExpect(jsonPath("$.model").value("Updated Model"));
+    }
+
+    @Test
+    @DataSet(value = "datasets/cars.yml", cleanBefore = true)
+    void updateCarById_NotFound() throws Exception {
+        CarRequestDto requestDto = createVaidCarRequestDto();
+        requestDto.setBrand("Test");
+        requestDto.setModel("Test");
+        requestDto.setYear(2023);
+
+        mockMvc.perform(put("/api/cars/999")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(requestDto)))
+                .andExpect(status().isNotFound());
     }
 
     @Test
@@ -312,18 +464,6 @@ public class CarControllerTest extends AbstractIntegrationTest {
                 .andExpect(jsonPath("$.insurancePrice", is(2.5)))
                 .andExpect(jsonPath("$.imageUrl", is("https://new-image.com/tesla.png")));
     }
-
-    @ParameterizedTest
-    @ValueSource(longs = {1, 2, 3, 7, 10})
-    void testUpdateCar_MultipleValidIds_ShouldReturn200(long carId) throws Exception {
-        CarRequestDto updateRequest = createVaidCarRequestDto();
-
-        mockMvc.perform(put("/api/cars/" + carId)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(updateRequest)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id", is((int) carId)))
-                .andExpect(jsonPath("$.brand", is("Dodge")));
-    }
 }
+
 

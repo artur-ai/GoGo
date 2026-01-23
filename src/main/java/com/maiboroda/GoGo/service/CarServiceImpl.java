@@ -1,6 +1,5 @@
 package com.maiboroda.GoGo.service;
 
-
 import com.maiboroda.GoGo.dto.CarRequestDto;
 import com.maiboroda.GoGo.dto.CarResponseDto;
 import com.maiboroda.GoGo.entity.Car;
@@ -21,6 +20,7 @@ import java.util.List;
 public class CarServiceImpl implements CarService {
     private final CarRepository carRepository;
     private final CarMapper carMapper;
+    private final CountryService countryService;
 
     @Value("${gogo.settings.random-number}")
     private int randomNumber;
@@ -64,4 +64,23 @@ public class CarServiceImpl implements CarService {
 
         return carMapper.toResponseDto(updatedCar);
     }
+
+
+    @Override
+    @Transactional
+    public List<CarResponseDto> findCarByCountry(String countryName) {
+        countryService.getCountryByName(countryName);
+        List<Car> cars = carRepository.findByCountriesName(countryName);
+
+        if (cars.isEmpty()) {
+            throw new EntityNotFoundException("No cars found for country: " + countryName);
+        }
+        log.info("Found {} cars for country: {}", cars.size(), countryName);
+
+        return cars.stream()
+                .map(carMapper::toResponseDto)
+                .toList();
+    }
+
+
 }
