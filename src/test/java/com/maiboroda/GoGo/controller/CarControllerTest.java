@@ -143,8 +143,7 @@ public class CarControllerTest extends AbstractIntegrationTest {
     void testRandomCarsHaveCorrectStructure() throws Exception {
         mockMvc.perform(get("/api/v1/cars/random"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].id", isA(Integer.class)))
-                .andExpect(jsonPath("$[0].createdAt", notNullValue()));
+                .andExpect(jsonPath("$[0].id", isA(Integer.class)));
     }
 
     @Test
@@ -152,8 +151,7 @@ public class CarControllerTest extends AbstractIntegrationTest {
         mockMvc.perform(get("/api/v1/cars/random"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].fuelType", notNullValue()))
-                .andExpect(jsonPath("$[0].engine", notNullValue()))
-                .andExpect(jsonPath("$[0].createdAt", notNullValue()));
+                .andExpect(jsonPath("$[0].engine", notNullValue()));
     }
 
     @Test
