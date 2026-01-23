@@ -23,7 +23,8 @@ public class CarController {
     private final CarService carService;
 
     @GetMapping
-    public PagedResponse<CarResponseDto> getAllCars(@PageableDefault(size = 6, page = 0) Pageable pageable) {
+    public PagedResponse<CarResponseDto> getAllCars(Pageable pageable) {
+        log.info("Rest request to get all cars with pageable: {}", pageable);
         return carService.getAllCars(pageable);
     }
 

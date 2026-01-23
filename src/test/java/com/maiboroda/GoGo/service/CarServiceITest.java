@@ -164,8 +164,7 @@ public class CarServiceITest extends AbstractIntegrationTest {
         assertEquals(requestDto.getFuelType(), savedCar.getFuelType());
         assertEquals(requestDto.getYear(), savedCar.getYear());
     }
-
-
+    
     @Test
     void testUpdateCarById_ShouldUpdateExistingCar() {
         Long carId = 1L;
