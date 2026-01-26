@@ -23,5 +23,4 @@ public class CarResponseDto {
     private BigDecimal pricePerDay;
     private BigDecimal insurancePrice;
     private String imageUrl;
-    private LocalDateTime createdAt;
 }
