@@ -1,4 +1,4 @@
-CREATE TABLE users (
+CREATE TABLE IF NOT EXISTS users (
     id BIGSERIAL PRIMARY KEY,
 
     first_name  VARCHAR(55) NOT NULL,
@@ -20,7 +20,8 @@ CREATE TABLE reviews (
 CREATE TABLE addresses (
     id BIGSERIAL PRIMARY KEY,
 
-    user_id BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     country         VARCHAR(50) NOT NULL,
-    town            VARCHAR(50) NOT NULL
+    town            VARCHAR(50) NOT NULL,
+
+    user_id BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE
 );
