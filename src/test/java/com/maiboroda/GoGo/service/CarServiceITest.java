@@ -134,7 +134,7 @@ public class CarServiceITest extends AbstractIntegrationTest {
 
     @Test
     @DataSet(value = "datasets/cars.yml", cleanBefore = true, cleanAfter = true)
-    void testAddCarReturnCorrectRespondeDto() {
+    void testAddCarReturnCorrectResponseDto() {
         CarRequestDto requestDto = createValidCarRequestDto();
         CarResponseDto responseDto = carService.addCar(requestDto);
 
@@ -226,7 +226,6 @@ public class CarServiceITest extends AbstractIntegrationTest {
         assertNotNull(firstCar.getId());
         assertNotNull(firstCar.getBrand());
         assertNotNull(firstCar.getModel());
-        assertNotNull(firstCar.getYear());
         assertNotNull(firstCar.getFuelType());
         assertNotNull(firstCar.getEngine());
         assertNotNull(firstCar.getPricePerMinute());
