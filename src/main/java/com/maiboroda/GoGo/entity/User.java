@@ -36,7 +36,7 @@ public class User {
     private LocalDate dateOfBirth;
 
     @Column(nullable = false, length = 15)
-    private String driverLicenseID;
+    private String driverLicenseId;
 
     @Column(nullable = false, length = 255)
     private String email;
