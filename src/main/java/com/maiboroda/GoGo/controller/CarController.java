@@ -2,11 +2,9 @@ package com.maiboroda.GoGo.controller;
 
 import com.maiboroda.GoGo.dto.CarRequestDto;
 import com.maiboroda.GoGo.dto.CarResponseDto;
-import com.maiboroda.GoGo.entity.Car;
 import com.maiboroda.GoGo.service.CarService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +20,7 @@ public class CarController {
     private final CarService carService;
 
     @GetMapping
-    public ResponseEntity<List<CarResponseDto>> gelAllCars() {
+    public ResponseEntity<List<CarResponseDto>> getAllCars() {
         List<CarResponseDto> cars = carService.getAllCars();
         log.info("Retrieved {} cars", cars.size());
         return ResponseEntity.ok(cars);
@@ -56,12 +54,7 @@ public class CarController {
     @GetMapping("/country")
     public ResponseEntity<List<CarResponseDto>> findCarsByCountry(
             @RequestParam String countryName) {
-        try {
-            List<CarResponseDto> cars = carService.findCarByCountry(countryName);
-            return ResponseEntity.ok(cars);
-        } catch (IllegalArgumentException exception) {
-            return ResponseEntity.badRequest().body(List.of());
-        }
-
+        List<CarResponseDto> cars = carService.findCarByCountry(countryName);
+        return ResponseEntity.ok(cars);
     }
 }

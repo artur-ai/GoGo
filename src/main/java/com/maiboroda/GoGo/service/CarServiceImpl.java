@@ -6,7 +6,7 @@ import com.maiboroda.GoGo.entity.Car;
 import com.maiboroda.GoGo.mapper.CarMapper;
 import com.maiboroda.GoGo.repository.CarRepository;
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,6 +25,7 @@ public class CarServiceImpl implements CarService {
     @Value("${gogo.settings.random-number}")
     private int randomNumber;
 
+    @Transactional(readOnly = true)
     @Override
     public List<CarResponseDto> getAllCars() {
         List<Car> cars = carRepository.findAll();
@@ -32,6 +33,7 @@ public class CarServiceImpl implements CarService {
         return carMapper.toResponseDtoList(cars);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<CarResponseDto> getRandomCars() {
         if (randomNumber < 0) {

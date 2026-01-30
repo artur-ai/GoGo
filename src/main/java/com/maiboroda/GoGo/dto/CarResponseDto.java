@@ -7,6 +7,7 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -16,7 +17,7 @@ public class CarResponseDto {
     private Long id;
     private String brand;
     private String model;
-    private int year;
+    private Integer year;
     private String fuelType;
     private String engine;
     private BigDecimal pricePerMinute;
@@ -24,4 +25,5 @@ public class CarResponseDto {
     private BigDecimal insurancePrice;
     private String imageUrl;
     private LocalDateTime createdAt;
+    private List<String> countries;
 }
