@@ -26,15 +26,4 @@ public class AuthController {
         log.info("Successfully register user: {} ", registerRequest.email());
         return new ResponseEntity<>(authenticationResponse, HttpStatus.CREATED);
     }
-
-    @PostMapping("/authenticate")
-    public ResponseEntity<AuthenticationResponse> authentication(
-            @RequestBody AuthenticationRequest authenticationRequest
-            ) {
-        log.info("Try to login user: {}", authenticationRequest.email());
-        AuthenticationResponse authenticationResponse = authenticationService.authenticate(authenticationRequest);
-        log.info("Successfully authenticate user: {}", authenticationRequest.email());
-        return new ResponseEntity<>(authenticationResponse, HttpStatus.OK);
-    }
-
 }
