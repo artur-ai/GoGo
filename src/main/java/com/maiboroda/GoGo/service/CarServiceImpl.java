@@ -39,6 +39,7 @@ public class CarServiceImpl implements CarService {
         return PagedResponse.of(carPage, cars);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<CarResponseDto> getRandomCars() {
         if (randomNumber <= 0) {
@@ -72,7 +73,6 @@ public class CarServiceImpl implements CarService {
 
         return carMapper.toResponseDto(updatedCar);
     }
-
 
     @Override
     @Transactional

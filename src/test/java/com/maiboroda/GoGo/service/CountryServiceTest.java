@@ -54,8 +54,8 @@ class CountryServiceTest {
         verify(countryRepository, times(1)).findAll();
 
         Country foundUkraine = countryService.getCountryByName("Ukraine");
-        Country foundPoland = countryService.getCountryByName("Poland");
-        Country foundGermany = countryService.getCountryByName("Germany");
+        Country foundPoland = countryService.getCountryByName("poland");
+        Country foundGermany = countryService.getCountryByName("GERMANY");
 
         assertNotNull(foundUkraine);
         assertNotNull(foundPoland);
@@ -102,38 +102,26 @@ class CountryServiceTest {
     }
 
     @Test
-    void testInitCache_ShouldClearAndReload() {
-        List<Country> firstLoad = Arrays.asList(ukraine);
-        List<Country> secondLoad = Arrays.asList(poland, germany);
-
-        when(countryRepository.findAll())
-                .thenReturn(firstLoad)
-                .thenReturn(secondLoad);
-
+    void testRefreshCache_ShouldUpdateDataFromDatabase() {
+        when(countryRepository.findAll()).thenReturn(List.of(ukraine));
         countryService.initCache();
-        Country firstResult = countryService.getCountryByName("Ukraine");
+        assertNotNull(countryService.getCountryByName("Ukraine"));
 
-        countryService.initCache();
+        when(countryRepository.findAll()).thenReturn(List.of(poland));
 
-        verify(countryRepository, times(2)).findAll();
+        countryService.refreshCache();
 
         assertThrows(EntityNotFoundException.class,
                 () -> countryService.getCountryByName("Ukraine"));
-
         assertNotNull(countryService.getCountryByName("Poland"));
-        assertNotNull(countryService.getCountryByName("Germany"));
+
+        verify(countryRepository, times(2)).findAll();
     }
 
     @Test
-    void testGetCountryByName_ShouldThrowExceptionForWrongCase() {
-        List<Country> countries = Arrays.asList(ukraine);
-        when(countryRepository.findAll()).thenReturn(countries);
-        countryService.initCache();
+    void testRefreshCache_ShouldHandleRepositoryException() {
+        when(countryRepository.findAll()).thenThrow(new RuntimeException("DB Connection error"));
 
-        assertThrows(EntityNotFoundException.class,
-                () -> countryService.getCountryByName("ukraine"));
-
-        assertThrows(EntityNotFoundException.class,
-                () -> countryService.getCountryByName("UKRAINE"));
+        assertDoesNotThrow(() -> countryService.refreshCache());
     }
 }

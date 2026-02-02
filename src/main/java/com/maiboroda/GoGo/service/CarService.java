@@ -10,8 +10,8 @@ import java.util.List;
 public interface CarService {
     PagedResponse<CarResponseDto> getAllCars(Pageable pageable);
     List<CarResponseDto> getRandomCars();
-    CarResponseDto addCar(CarRequestDto carRequestDto);
 
+    CarResponseDto addCar(CarRequestDto carRequestDto);
     CarResponseDto updateCarById(CarRequestDto carRequestDto, long id);
 
     List<CarResponseDto> findCarByCountry(String countryName);

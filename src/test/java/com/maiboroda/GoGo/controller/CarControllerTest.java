@@ -4,7 +4,11 @@ import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.junit5.api.DBRider;
 import com.maiboroda.GoGo.AbstractIntegrationTest;
 import com.maiboroda.GoGo.dto.CarRequestDto;
+import com.maiboroda.GoGo.dto.CarResponseDto;
+import com.maiboroda.GoGo.entity.Car;
+import com.maiboroda.GoGo.repository.CarRepository;
 import com.maiboroda.GoGo.service.CarService;
+import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -17,9 +21,15 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.math.BigDecimal;
+import java.util.Optional;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -36,6 +46,9 @@ public class CarControllerTest extends AbstractIntegrationTest {
 
     @Autowired
     private CarService carService;
+
+    @Autowired
+    private CarRepository carRepository;
 
     @Autowired
     private ObjectMapper objectMapper;

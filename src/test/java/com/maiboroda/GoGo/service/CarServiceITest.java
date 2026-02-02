@@ -164,7 +164,7 @@ public class CarServiceITest extends AbstractIntegrationTest {
         assertEquals(requestDto.getFuelType(), savedCar.getFuelType());
         assertEquals(requestDto.getYear(), savedCar.getYear());
     }
-    
+
     @Test
     void testFindCarByCountry_Ukraine_ReturnsCorrectCount() {
         List<CarResponseDto> cars = carService.findCarByCountry("Ukraine");
@@ -226,12 +226,14 @@ public class CarServiceITest extends AbstractIntegrationTest {
         assertNotNull(firstCar.getId());
         assertNotNull(firstCar.getBrand());
         assertNotNull(firstCar.getModel());
+        assertNotEquals(0, firstCar.getYear());
         assertNotNull(firstCar.getFuelType());
         assertNotNull(firstCar.getEngine());
         assertNotNull(firstCar.getPricePerMinute());
         assertNotNull(firstCar.getPricePerDay());
         assertNotNull(firstCar.getInsurancePrice());
         assertNotNull(firstCar.getImageUrl());
+        assertNotNull(firstCar.getCreatedAt());
     }
 
     @Test
