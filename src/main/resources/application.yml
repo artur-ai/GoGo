@@ -15,6 +15,12 @@ spring:
     enabled: true
     baseline-on-migrate: true
 
+data:
+  web:
+    pageable:
+      default-page-size: 6
+      max-page-size: 15
+
 gogo:
   settings:
     random-number: 3

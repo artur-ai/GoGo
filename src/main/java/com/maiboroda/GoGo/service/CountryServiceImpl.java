@@ -29,7 +29,7 @@ public class CountryServiceImpl implements CountryService {
 
         countries.forEach(country ->
                 countryCache.put(country.getName().toLowerCase(), country)
-        );
+                );
 
         log.info("Downloaded {} countries in cache ", countries.size());
     }
