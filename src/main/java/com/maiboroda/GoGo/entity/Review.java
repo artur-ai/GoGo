@@ -1,6 +1,7 @@
 package com.maiboroda.GoGo.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -22,7 +23,8 @@ public class Review {
     @Column(nullable = true, length = 200)
     private String reviewText;
 
-    @ManyToOne
+    @JsonIgnore
+    @ManyToOne (fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 }
