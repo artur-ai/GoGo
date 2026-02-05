@@ -9,6 +9,8 @@ import lombok.Setter;
 
 import java.sql.Date;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.atomic.DoubleAccumulator;
 
 @Getter
@@ -43,4 +45,10 @@ public class User {
 
     @Column(nullable = false, length = 20)
     private String password;
+
+    @OneToMany(mappedBy = "user")
+    private List<Review> reviewList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user")
+    private List<Address> addressList = new ArrayList<>();
 }

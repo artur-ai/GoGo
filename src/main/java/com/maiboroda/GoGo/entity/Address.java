@@ -25,4 +25,8 @@ public class Address {
 
     @Column(nullable = false, length = 50)
     private String town;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 }
