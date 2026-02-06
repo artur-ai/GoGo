@@ -1,4 +1,9 @@
 package com.maiboroda.GoGo.service;
 
-public interface ReviewService {
+import com.maiboroda.GoGo.entity.Review;
+
+import java.util.List;
+
+public interface ReviewService{
+    List<Review> getLastReviews (int count);
 }
