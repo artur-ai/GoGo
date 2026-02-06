@@ -13,13 +13,11 @@ CREATE TABLE IF NOT EXISTS users (
 CREATE TABLE reviews (
     id BIGSERIAL PRIMARY KEY,
     user_id BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-
     review_text TEXT NOT NULL
 );
 
 CREATE TABLE addresses (
     id BIGSERIAL PRIMARY KEY,
-
     country         VARCHAR(50) NOT NULL,
     town            VARCHAR(50) NOT NULL,
 
