@@ -5,5 +5,5 @@ import com.maiboroda.GoGo.entity.Review;
 import java.util.List;
 
 public interface ReviewService{
-    List<Review> getLastReviews (int count);
+    List<Review> getLastReviews();
 }
