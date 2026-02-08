@@ -53,5 +53,51 @@ document.addEventListener('DOMContentLoaded', () => {
             container.innerHTML = '<p style="text-align: center; color: red; grid-column: 1/-1;">Не вдалося завантажити автомобілі</p>';
         }
     }
+
+    function loadReviews() {
+            fetch('http://localhost:8080/api/reviews')
+                .then(response => response.json())
+                .then(reviews => {
+                    displayReviews(reviews);
+                })
+                .catch(error => {
+                    console.error('Помилка завантаження відгуків:', error);
+                });
+        }
+
+        function displayReviews(reviews) {
+                const reviewList = document.querySelector('.review-list');
+
+                if (!reviewList) {
+                    console.warn('Container .review-list not found');
+                    return;
+                }
+        reviewList.innerHTML = '';
+    reviews.forEach(review => {
+                const reviewCard = document.createElement('div');
+                reviewCard.className = 'review-card';
+
+                reviewCard.innerHTML = `
+                    <h3>${review.firstName}, ${calculateAge(review.dateOfBirth)} років, ${review.town}</h3>
+                    <p>${review.reviewText}</p>
+                `;
+
+                reviewList.appendChild(reviewCard);
+            });
+        }
+        function calculateAge(dateOfBirth) {
+                const today = new Date();
+                const birthDate = new Date(dateOfBirth);
+                let age = today.getFullYear() - birthDate.getFullYear();
+                const monthDiff = today.getMonth() - birthDate.getMonth();
+
+                if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+                    age--;
+                }
+
+                return age;
+            }
+
     loadFeaturedCars();
+    loadReviews();
 });
