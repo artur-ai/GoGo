@@ -1,5 +1,6 @@
 package com.maiboroda.GoGo.repository;
 
+import com.maiboroda.GoGo.dto.ReviewResponseDTO;
 import com.maiboroda.GoGo.entity.Review;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

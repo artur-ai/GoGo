@@ -1,5 +1,6 @@
 package com.maiboroda.GoGo.controller;
 
+import com.maiboroda.GoGo.dto.ReviewResponseDTO;
 import com.maiboroda.GoGo.entity.Review;
 import com.maiboroda.GoGo.service.ReviewService;
 import lombok.AllArgsConstructor;
@@ -15,7 +16,7 @@ import java.util.List;
 public class ReviewController {
     private final ReviewService reviewService;
     @GetMapping
-    public List <Review> getLastReviews(){
+    public List <ReviewResponseDTO> getLastReviews(){
             return reviewService.getLastReviews();
     }
 }

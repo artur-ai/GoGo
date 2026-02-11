@@ -1,9 +1,10 @@
 package com.maiboroda.GoGo.service;
 
-import com.maiboroda.GoGo.entity.Review;
+import com.maiboroda.GoGo.dto.ReviewResponseDTO;
+
 
 import java.util.List;
 
 public interface ReviewService{
-    List<Review> getLastReviews();
+    List<ReviewResponseDTO> getLastReviews();
 }

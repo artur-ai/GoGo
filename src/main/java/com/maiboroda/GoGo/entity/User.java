@@ -40,15 +40,15 @@ public class User {
     @Column(nullable = false, length = 15)
     private String driverLicenseId;
 
-    @Column(nullable = false, length = 255)
+    @Column(nullable = false, length = 254)
     private String email;
 
     @Column(nullable = false, length = 20)
     private String password;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Review> reviewList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Address> addressList = new ArrayList<>();
 }
