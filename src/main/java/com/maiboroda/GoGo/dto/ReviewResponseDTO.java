@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -15,8 +14,10 @@ import java.time.LocalDateTime;
 @Setter
 public class ReviewResponseDTO {
 
-    private Long id;
     private String reviewText;
     private String firstName;
     private LocalDate dateOfBirth;
+    private String town;
 }
+
+//[todo] remove id, see how to do with record
