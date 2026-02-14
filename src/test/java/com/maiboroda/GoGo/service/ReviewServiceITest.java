@@ -1,4 +1,4 @@
 package com.maiboroda.GoGo.service;
 
-public class ReviewServiceiTest {
+public class ReviewServiceITest {
 }
