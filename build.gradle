@@ -118,8 +118,8 @@ sonar {
         property "sonar.host.url", "https://sonarcloud.io"
 
         property "sonar.sourceEncoding", "UTF-8"
-        property "sonar.java.source", "23"
-        property "sonar.java.target", "23"
+        property "sonar.java.source", "21"
+        property "sonar.java.target", "21"
 
         property "sonar.sources", "src/main/java"
         property "sonar.tests", "src/test/java"

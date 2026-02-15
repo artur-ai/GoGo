@@ -51,12 +51,7 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      - name: Setup Docker Permissions
-        run: sudo chmod 666 /var/run/docker.sock
-
       - name: Build and Test with JaCoCo
-        env:
-          TESTCONTAINERS_RYUK_DISABLED: true
         run: ./gradlew clean build test jacocoTestReport --info --stacktrace
 
       - name: Verify JaCoCo Report Exists
