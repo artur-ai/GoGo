@@ -29,6 +29,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public List<ReviewResponseDTO> getAllReviews() {
-        return List.of();
+        List<Review> reviews = reviewRepository.findAll();
+        return reviewMapper.toDtoList(reviews);
     }
 }
