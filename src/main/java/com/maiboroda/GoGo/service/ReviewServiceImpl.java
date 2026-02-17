@@ -26,4 +26,9 @@ public class ReviewServiceImpl implements ReviewService {
         List<Review> reviews = reviewRepository.findLastReviews(randomNumberReview);
         return reviewMapper.toDtoList(reviews);
     }
+
+    @Override
+    public List<ReviewResponseDTO> getAllReviews() {
+        return List.of();
+    }
 }

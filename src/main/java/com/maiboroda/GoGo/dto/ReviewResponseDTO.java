@@ -18,6 +18,5 @@ public class ReviewResponseDTO {
     private String firstName;
     private LocalDate dateOfBirth;
     private String town;
-}
 
-//[todo] remove id, see how to do with record
+}

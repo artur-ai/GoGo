@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface ReviewService{
     List<ReviewResponseDTO> getLastReviews();
+    List<ReviewResponseDTO> getAllReviews();
 }
