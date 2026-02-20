@@ -1,3 +1,21 @@
+countries:
+  - id: 1
+    name: "Ukraine"
+  - id: 2
+    name: "Poland"
+  - id: 3
+    name: "Germany"
+  - id: 4
+    name: "France"
+  - id: 5
+    name: "Italy"
+  - id: 6
+    name: "Spain"
+  - id: 7
+    name: "Netherlands"
+  - id: 8
+    name: "Japan"
+
 cars:
   - id: 1
     brand: "Skoda"
@@ -6,7 +24,7 @@ cars:
     fuel_type: "Petrol/Gas"
     engine: "1.2L"
     price_per_minute: 2.2
-    price_per_day: 600
+    price_per_day: 600.0
     insurance_price: 0.96
     image_url: "https://res.cloudinary.com/de6b0q56z/image/upload/v1762162805/skoda-fabia_nvxaiq.png"
     created_at: "[NOW]"
@@ -18,7 +36,7 @@ cars:
     fuel_type: "Petrol"
     engine: "1.2L"
     price_per_minute: 1.6
-    price_per_day: 600
+    price_per_day: 600.0
     insurance_price: 0.76
     image_url: "https://res.cloudinary.com/de6b0q56z/image/upload/v1762162805/ravon_htgvqy.png"
     created_at: "[NOW]"
@@ -30,7 +48,7 @@ cars:
     fuel_type: "Petrol/Gas"
     engine: "1.6L"
     price_per_minute: 2.6
-    price_per_day: 900
+    price_per_day: 900.0
     insurance_price: 1.04
     image_url: "https://res.cloudinary.com/de6b0q56z/image/upload/v1762162804/volkswagen-polo_rvb3fj.png"
     created_at: "[NOW]"
@@ -42,7 +60,7 @@ cars:
     fuel_type: "Petrol"
     engine: "1.6L"
     price_per_minute: 2.6
-    price_per_day: 900
+    price_per_day: 900.0
     insurance_price: 1.04
     image_url: "https://res.cloudinary.com/de6b0q56z/image/upload/v1762162804/ford-fiesta_ek4ijy.png"
     created_at: "[NOW]"
@@ -54,7 +72,7 @@ cars:
     fuel_type: "Diesel"
     engine: "2.0L"
     price_per_minute: 3.7
-    price_per_day: 1250
+    price_per_day: 1250.0
     insurance_price: 1.4
     image_url: "https://res.cloudinary.com/de6b0q56z/image/upload/v1762162804/volkswagen-jetta_ffmjtb.png"
     created_at: "[NOW]"
@@ -66,7 +84,7 @@ cars:
     fuel_type: "Petrol"
     engine: "1.6L"
     price_per_minute: 3.7
-    price_per_day: 1250
+    price_per_day: 1250.0
     insurance_price: 1.4
     image_url: "https://res.cloudinary.com/de6b0q56z/image/upload/v1762162805/skoda-rapid_xeo513.png"
     created_at: "[NOW]"
@@ -78,7 +96,7 @@ cars:
     fuel_type: "Electro"
     engine: "EV Motor"
     price_per_minute: 3.7
-    price_per_day: 2500
+    price_per_day: 2500.0
     insurance_price: 1.48
     image_url: "https://res.cloudinary.com/de6b0q56z/image/upload/v1762162805/nissan-leaf_iu1ryc.png"
     created_at: "[NOW]"
@@ -90,7 +108,7 @@ cars:
     fuel_type: "Petrol"
     engine: "2.0L"
     price_per_minute: 6.1
-    price_per_day: 2600
+    price_per_day: 2600.0
     insurance_price: 2.44
     image_url: "https://res.cloudinary.com/de6b0q56z/image/upload/v1762162806/skoda-octavia_ngxaz4.png"
     created_at: "[NOW]"
@@ -102,7 +120,7 @@ cars:
     fuel_type: "Petrol"
     engine: "2.0L"
     price_per_minute: 6.1
-    price_per_day: 2600
+    price_per_day: 2600.0
     insurance_price: 2.44
     image_url: "https://res.cloudinary.com/de6b0q56z/image/upload/v1762162804/audi-a4_k7dxqp.png"
     created_at: "[NOW]"
@@ -114,7 +132,7 @@ cars:
     fuel_type: "Petrol"
     engine: "2.0L"
     price_per_minute: 6.1
-    price_per_day: 2600
+    price_per_day: 2600.0
     insurance_price: 2.44
     image_url: "https://res.cloudinary.com/de6b0q56z/image/upload/v1762162804/bmw_gis4oh.png"
     created_at: "[NOW]"
@@ -126,7 +144,7 @@ cars:
     fuel_type: "Petrol"
     engine: "2.5L"
     price_per_minute: 6.1
-    price_per_day: 2600
+    price_per_day: 2600.0
     insurance_price: 2.44
     image_url: "https://res.cloudinary.com/de6b0q56z/image/upload/v1762162805/toyota-camry_u2jscc.png"
     created_at: "[NOW]"
@@ -138,7 +156,97 @@ cars:
     fuel_type: "Diesel"
     engine: "2.5L"
     price_per_minute: 5.5
-    price_per_day: 2800
+    price_per_day: 2800.0
     insurance_price: 2.44
     image_url: "https://res.cloudinary.com/de6b0q56z/image/upload/v1762162804/hundai-bus_gn2cht.png"
     created_at: "[NOW]"
+
+car_countries:
+  - car_id: 1
+    country_id: 1
+  - car_id: 2
+    country_id: 1
+  - car_id: 3
+    country_id: 1
+  - car_id: 4
+    country_id: 1
+  - car_id: 10
+    country_id: 1
+  - car_id: 12
+    country_id: 1
+  - car_id: 1
+    country_id: 2
+  - car_id: 2
+    country_id: 2
+  - car_id: 3
+    country_id: 2
+  - car_id: 4
+    country_id: 2
+  - car_id: 5
+    country_id: 2
+  - car_id: 8
+    country_id: 2
+  - car_id: 12
+    country_id: 2
+  - car_id: 3
+    country_id: 3
+  - car_id: 5
+    country_id: 3
+  - car_id: 6
+    country_id: 3
+  - car_id: 7
+    country_id: 3
+  - car_id: 8
+    country_id: 3
+  - car_id: 9
+    country_id: 3
+  - car_id: 12
+    country_id: 3
+  - car_id: 3
+    country_id: 4
+  - car_id: 5
+    country_id: 4
+  - car_id: 6
+    country_id: 4
+  - car_id: 7
+    country_id: 4
+  - car_id: 8
+    country_id: 4
+  - car_id: 10
+    country_id: 4
+  - car_id: 11
+    country_id: 4
+  - car_id: 12
+    country_id: 4
+  - car_id: 7
+    country_id: 5
+  - car_id: 8
+    country_id: 5
+  - car_id: 9
+    country_id: 5
+  - car_id: 10
+    country_id: 5
+  - car_id: 11
+    country_id: 5
+  - car_id: 12
+    country_id: 5
+  - car_id: 4
+    country_id: 6
+  - car_id: 6
+    country_id: 6
+  - car_id: 11
+    country_id: 6
+  - car_id: 12
+    country_id: 6
+  - car_id: 3
+    country_id: 7
+  - car_id: 7
+    country_id: 7
+  - car_id: 9
+    country_id: 7
+  - car_id: 7
+    country_id: 8
+  - car_id: 10
+    country_id: 8
+  - car_id: 11
+    country_id: 8

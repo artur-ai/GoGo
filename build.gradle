@@ -1,6 +1,6 @@
 plugins {
     id 'java'
-    id 'org.springframework.boot' version '3.4.0'
+    id 'org.springframework.boot' version '4.0.0'
     id 'io.spring.dependency-management' version '1.1.7'
     id 'jacoco'
     id 'org.sonarqube' version '7.2.2.6593'
@@ -11,14 +11,17 @@ version = '0.0.1-SNAPSHOT'
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(23)
+        languageVersion = JavaLanguageVersion.of(25)
     }
 }
 
 ext {
-    testcontainersVersion = '1.19.3'
+    testcontainersVersion = '1.20.1'
     databaseRiderVersion = '1.43.0'
-    mapstructVersion = '1.5.5.Final'
+    mapstructVersion = '1.6.3'
+    lombockMapStructVersion = '0.2.0'
+    lombokVersion = '1.18.42'
+    jacocoVersion = '0.8.14'
     JsonWebTokenVersion = '0.13.0'
 }
 
@@ -36,22 +39,27 @@ dependencies {
     implementation 'org.flywaydb:flyway-core'
     implementation 'org.flywaydb:flyway-database-postgresql'
 
+    implementation("org.projectlombok:lombok:${lombokVersion}")
+    compileOnly "org.projectlombok:lombok:${lombokVersion}"
+    annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+
+    annotationProcessor "org.projectlombok:lombok-mapstruct-binding:${lombockMapStructVersion}"
+
     implementation "org.mapstruct:mapstruct:${mapstructVersion}"
     annotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
-    annotationProcessor 'org.projectlombok:lombok-mapstruct-binding:0.2.0'
+
+    implementation 'org.slf4j:slf4j-api'
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'
 
     implementation "org.springframework.boot:spring-boot-starter-security"
     implementation "io.jsonwebtoken:jjwt-api:${JsonWebTokenVersion}"
     runtimeOnly "io.jsonwebtoken:jjwt-impl:${JsonWebTokenVersion}"
     runtimeOnly "io.jsonwebtoken:jjwt-jackson:${JsonWebTokenVersion}"
 
-    compileOnly 'org.projectlombok:lombok'
-    annotationProcessor 'org.projectlombok:lombok'
-
-    implementation 'org.slf4j:slf4j-api'
-
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    testCompileOnly "org.projectlombok:lombok:${lombokVersion}"
+    testAnnotationProcessor "org.projectlombok:lombok:${lombokVersion}"
 
     testImplementation "org.testcontainers:testcontainers:${testcontainersVersion}"
     testImplementation "org.testcontainers:postgresql:${testcontainersVersion}"
@@ -63,7 +71,7 @@ dependencies {
 }
 
 jacoco {
-    toolVersion = "0.8.12"
+    toolVersion = "${jacocoVersion}"
 }
 
 test {
@@ -122,8 +130,8 @@ sonar {
         property "sonar.host.url", "https://sonarcloud.io"
 
         property "sonar.sourceEncoding", "UTF-8"
-        property "sonar.java.source", "23"
-        property "sonar.java.target", "23"
+        property "sonar.java.source", "25"
+        property "sonar.java.target", "25"
 
         property "sonar.sources", "src/main/java"
         property "sonar.tests", "src/test/java"

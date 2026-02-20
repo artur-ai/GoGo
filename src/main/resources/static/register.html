@@ -158,6 +158,12 @@
     </section>
 </main>
 
+  <script>
+    document.getElementById('registration-form').addEventListener('submit', function(event) {
+      event.preventDefault();
+      document.getElementById('success-message').style.display = 'block';
+    });
+  </script>
 <script src="js/auth.js"></script>
 </body>
 </html>

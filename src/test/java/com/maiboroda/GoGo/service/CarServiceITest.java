@@ -5,17 +5,14 @@ import com.github.database.rider.junit5.api.DBRider;
 import com.maiboroda.GoGo.AbstractIntegrationTest;
 import com.maiboroda.GoGo.dto.CarRequestDto;
 import com.maiboroda.GoGo.dto.CarResponseDto;
+import com.maiboroda.GoGo.dto.PagedResponse;
 import com.maiboroda.GoGo.entity.Car;
 import com.maiboroda.GoGo.repository.CarRepository;
-import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.transaction.Transactional;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.test.context.ActiveProfiles;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -28,8 +25,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@ActiveProfiles("test")
-@DataSet("datasets/cars.yml")
+@DBRider
+@DataSet(value = "datasets/cars.yml", cleanBefore = false, cleanAfter = false)
 public class CarServiceITest extends AbstractIntegrationTest {
 
     @Autowired
@@ -39,12 +36,7 @@ public class CarServiceITest extends AbstractIntegrationTest {
     private CarRepository carRepository;
 
     @Autowired
-    private JdbcTemplate jdbcTemplate;
-
-    @BeforeEach
-    void resetSequence() {
-        jdbcTemplate.execute("ALTER SEQUENCE cars_id_seq RESTART WITH 13");
-    }
+    private CountryService countryService;
 
     private CarRequestDto createValidCarRequestDto() {
         return new CarRequestDto(
@@ -56,16 +48,21 @@ public class CarServiceITest extends AbstractIntegrationTest {
 
     @Test
     void testGetAllCars_ReturnCorrectSize() {
-        List<CarResponseDto> cars = carService.getAllCars();
+        Pageable pageable = PageRequest.of(0, 20);
 
-        assertFalse(cars.isEmpty());
-        assertEquals(12, cars.size());
+        PagedResponse<CarResponseDto> response = carService.getAllCars(pageable);
+
+        assertNotNull(response);
+        assertFalse(response.content().isEmpty());
+        assertEquals(12, response.totalElements());
     }
 
     @Test
     void testReturnFirstCarWithAllFields() {
-        List<CarResponseDto> cars = carService.getAllCars();
-        CarResponseDto firstCar = cars.get(0);
+        Pageable pageable = PageRequest.of(0, 10);
+        PagedResponse<CarResponseDto> response = carService.getAllCars(pageable);
+
+        CarResponseDto firstCar = response.content().get(0);
 
         assertEquals(1, firstCar.getId());
         assertEquals("Skoda", firstCar.getBrand());
@@ -86,8 +83,10 @@ public class CarServiceITest extends AbstractIntegrationTest {
 
     @Test
     void testGetAllCars_ContainsExpectedBrands() {
-        List<CarResponseDto> cars = carService.getAllCars();
-        Set<String> brands = cars.stream()
+        Pageable pageable = PageRequest.of(0, 50);
+        PagedResponse<CarResponseDto> response = carService.getAllCars(pageable);
+
+        Set<String> brands = response.content().stream()
                 .map(CarResponseDto::getBrand)
                 .collect(Collectors.toSet());
 
@@ -99,8 +98,10 @@ public class CarServiceITest extends AbstractIntegrationTest {
 
     @Test
     void testGetAllCars_ContainsExpectedFuelTypes() {
-        List<CarResponseDto> cars = carService.getAllCars();
-        Set<String> fuelTypes = cars.stream()
+        Pageable pageable = PageRequest.of(0, 50);
+        PagedResponse<CarResponseDto> response = carService.getAllCars(pageable);
+
+        Set<String> fuelTypes = response.content().stream()
                 .map(CarResponseDto::getFuelType)
                 .collect(Collectors.toSet());
 
@@ -110,11 +111,16 @@ public class CarServiceITest extends AbstractIntegrationTest {
     }
 
     @Test
-    void testServiceUsesRepository() {
-        List<CarResponseDto> serviceCars = carService.getAllCars();
-        List<Car> repositoryCars = carRepository.findAll();
+    void testPaginationMetadata() {
+        int pageSize = 5;
+        Pageable pageable = PageRequest.of(0, pageSize);
 
-        assertEquals(repositoryCars.size(), serviceCars.size());
+        PagedResponse<CarResponseDto> response = carService.getAllCars(pageable);
+
+        assertEquals(0, response.pageNumber());
+        assertEquals(pageSize, response.pageSize());
+        assertTrue(response.totalElements() > 0);
+        assertEquals(3, response.totalPages());
     }
 
     @Test
@@ -128,8 +134,7 @@ public class CarServiceITest extends AbstractIntegrationTest {
     }
 
     @Test
-    @DataSet(value = "datasets/cars.yml", cleanBefore = true, cleanAfter = true)
-    void testAddCarReturnCorrectRespondeDto() {
+    void testAddCarReturnCorrectResponseDto() {
         CarRequestDto requestDto = createValidCarRequestDto();
         CarResponseDto responseDto = carService.addCar(requestDto);
 
@@ -140,7 +145,6 @@ public class CarServiceITest extends AbstractIntegrationTest {
     }
 
     @Test
-    @DataSet(value = "datasets/cars.yml", cleanBefore = true, cleanAfter = true)
     void testAddCarReturnCorrectCount() {
         long initialCount = carRepository.count();
 
@@ -158,6 +162,77 @@ public class CarServiceITest extends AbstractIntegrationTest {
         assertEquals(requestDto.getEngine(), savedCar.getEngine());
         assertEquals(requestDto.getFuelType(), savedCar.getFuelType());
         assertEquals(requestDto.getYear(), savedCar.getYear());
+    }
+
+    @Test
+    void testFindCarByCountry_Ukraine_ReturnsCorrectCount() {
+        List<CarResponseDto> cars = carService.findCarByCountry("Ukraine");
+
+        assertNotNull(cars);
+        assertEquals(6, cars.size());
+    }
+
+    @Test
+    void testFindCarByCountry_Poland_ReturnsCorrectCount() {
+        List<CarResponseDto> cars = carService.findCarByCountry("Poland");
+
+        assertNotNull(cars);
+        assertEquals(7, cars.size());
+    }
+
+    @Test
+    void testFindCarByCountry_Germany_ReturnsCorrectCount() {
+        List<CarResponseDto> cars = carService.findCarByCountry("Germany");
+
+        assertNotNull(cars);
+        assertEquals(7, cars.size());
+    }
+
+    @Test
+    void testFindCarByCountry_Italy_ReturnsCorrectBrands() {
+        List<CarResponseDto> cars = carService.findCarByCountry("Italy");
+
+        assertEquals(6, cars.size());
+
+        Set<String> brands = cars.stream()
+                .map(CarResponseDto::getBrand)
+                .collect(Collectors.toSet());
+
+        assertThat(brands).containsExactlyInAnyOrder(
+                "Nissan", "Skoda", "Audi", "BMW", "Toyota", "Hyundai"
+        );
+    }
+
+    @Test
+    void testFindCarByCountry_Spain_ReturnsCorrectCars() {
+        List<CarResponseDto> cars = carService.findCarByCountry("Spain");
+
+        assertEquals(4, cars.size());
+
+        List<String> models = cars.stream()
+                .map(CarResponseDto::getModel)
+                .sorted()
+                .toList();
+
+        assertThat(models).containsExactly("Camry", "Fiesta", "H-1", "Rapid");
+    }
+
+    @Test
+    void testFindCarByCountry_ReturnsCarResponseDtoWithAllFields() {
+        List<CarResponseDto> cars = carService.findCarByCountry("Ukraine");
+
+        CarResponseDto firstCar = cars.get(0);
+        assertNotNull(firstCar.getId());
+        assertNotNull(firstCar.getBrand());
+        assertNotNull(firstCar.getModel());
+        assertNotEquals(0, firstCar.getYear());
+        assertNotNull(firstCar.getFuelType());
+        assertNotNull(firstCar.getEngine());
+        assertNotNull(firstCar.getPricePerMinute());
+        assertNotNull(firstCar.getPricePerDay());
+        assertNotNull(firstCar.getInsurancePrice());
+        assertNotNull(firstCar.getImageUrl());
+        assertNotNull(firstCar.getCreatedAt());
     }
 
     @Test
