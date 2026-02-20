@@ -24,6 +24,7 @@ public interface CarMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "countries", ignore = true)
     void updateCarFromDto(CarRequestDto carRequestDto, @MappingTarget Car car);
 
     default List<String> mapCountries(List<com.maiboroda.GoGo.entity.Country> countries) {

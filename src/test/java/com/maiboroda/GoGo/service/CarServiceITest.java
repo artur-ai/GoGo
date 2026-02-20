@@ -10,8 +10,6 @@ import com.maiboroda.GoGo.entity.Car;
 import com.maiboroda.GoGo.repository.CarRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -28,7 +26,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @DBRider
-@DataSet("datasets/cars.yml")
+@DataSet(value = "datasets/cars.yml", cleanBefore = false, cleanAfter = false)
 public class CarServiceITest extends AbstractIntegrationTest {
 
     @Autowired
@@ -36,6 +34,9 @@ public class CarServiceITest extends AbstractIntegrationTest {
 
     @Autowired
     private CarRepository carRepository;
+
+    @Autowired
+    private CountryService countryService;
 
     private CarRequestDto createValidCarRequestDto() {
         return new CarRequestDto(
@@ -133,7 +134,6 @@ public class CarServiceITest extends AbstractIntegrationTest {
     }
 
     @Test
-    @DataSet(value = "datasets/cars.yml", cleanBefore = true, cleanAfter = true)
     void testAddCarReturnCorrectResponseDto() {
         CarRequestDto requestDto = createValidCarRequestDto();
         CarResponseDto responseDto = carService.addCar(requestDto);
@@ -145,7 +145,6 @@ public class CarServiceITest extends AbstractIntegrationTest {
     }
 
     @Test
-    @DataSet(value = "datasets/cars.yml", cleanBefore = true, cleanAfter = true)
     void testAddCarReturnCorrectCount() {
         long initialCount = carRepository.count();
 

@@ -4,61 +4,42 @@ import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.junit5.api.DBRider;
 import com.maiboroda.GoGo.AbstractIntegrationTest;
 import com.maiboroda.GoGo.dto.CarRequestDto;
-import com.maiboroda.GoGo.dto.CarResponseDto;
-import com.maiboroda.GoGo.entity.Car;
-import com.maiboroda.GoGo.repository.CarRepository;
 import com.maiboroda.GoGo.service.CarService;
-import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import java.math.BigDecimal;
-import java.util.Optional;
 
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @DBRider
-@DataSet("datasets/cars.yml")
-@AutoConfigureMockMvc
 @ActiveProfiles("test")
+@DataSet(value = "datasets/cars.yml", cleanBefore = true, cleanAfter = false)
 public class CarControllerTest extends AbstractIntegrationTest {
+
     @Autowired
     private MockMvc mockMvc;
 
     @Autowired
     private CarService carService;
 
-    @Autowired
-    private CarRepository carRepository;
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
-    @Autowired
-    private ObjectMapper objectMapper;
-
-    private CarRequestDto createVaidCarRequestDto() {
+    private CarRequestDto createValidCarRequestDto() {
         return new CarRequestDto("Dodge", "Dart", 2014, "Petrol", "2.4",
                 new BigDecimal("15.50"), new BigDecimal("1200.00"), new BigDecimal("10.00"),
                 "https://test.com/dodge.png");
     }
-
 
     @Test
     void testReturnAllCars() throws Exception {
@@ -196,9 +177,8 @@ public class CarControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
-    @DataSet(value = "datasets/cars.yml", cleanBefore = true)
-    void testAddValidCarReturen201Created() throws Exception {
-        CarRequestDto requestDto = createVaidCarRequestDto();
+    void testAddValidCarReturn201Created() throws Exception {
+        CarRequestDto requestDto = createValidCarRequestDto();
 
         mockMvc.perform(post("/api/v1/cars")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -211,7 +191,7 @@ public class CarControllerTest extends AbstractIntegrationTest {
 
     @Test
     void testAddCarInvalidYear_ShouldReturn400BadRequest() throws Exception {
-        CarRequestDto requestDto = createVaidCarRequestDto();
+        CarRequestDto requestDto = createValidCarRequestDto();
         requestDto.setYear(3000);
 
         mockMvc.perform(post("/api/v1/cars")
@@ -224,7 +204,7 @@ public class CarControllerTest extends AbstractIntegrationTest {
 
     @Test
     void testAddCarMissingBrand_ShouldReturn400BadRequest() throws Exception {
-        CarRequestDto requestDto = createVaidCarRequestDto();
+        CarRequestDto requestDto = createValidCarRequestDto();
         requestDto.setBrand("");
 
         mockMvc.perform(post("/api/v1/cars")
@@ -236,7 +216,7 @@ public class CarControllerTest extends AbstractIntegrationTest {
 
     @Test
     void testAddCarNonPositivePrice_ShouldReturn400BadRequest() throws Exception {
-        CarRequestDto requestDto = createVaidCarRequestDto();
+        CarRequestDto requestDto = createValidCarRequestDto();
         requestDto.setPricePerMinute(BigDecimal.ZERO);
 
         mockMvc.perform(post("/api/v1/cars")
@@ -346,7 +326,7 @@ public class CarControllerTest extends AbstractIntegrationTest {
 
     @Test
     void testUpdateCar_ShouldReturn200okAndUpdateCar() throws Exception {
-        CarRequestDto updateCar = createVaidCarRequestDto();
+        CarRequestDto updateCar = createValidCarRequestDto();
         updateCar.setBrand("Skoda");
         updateCar.setModel("Fabia Updated");
         updateCar.setYear(2015);
@@ -364,7 +344,6 @@ public class CarControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
-    @DataSet(value = "datasets/cars.yml", cleanBefore = true)
     void updateCarById_Success() throws Exception {
         CarRequestDto requestDto = new CarRequestDto();
         requestDto.setBrand("Updated Brand");
@@ -387,9 +366,8 @@ public class CarControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
-    @DataSet(value = "datasets/cars.yml", cleanBefore = true)
     void updateCarById_NotFound() throws Exception {
-        CarRequestDto requestDto = createVaidCarRequestDto();
+        CarRequestDto requestDto = createValidCarRequestDto();
         requestDto.setBrand("Test");
         requestDto.setModel("Test");
         requestDto.setYear(2023);
@@ -402,7 +380,7 @@ public class CarControllerTest extends AbstractIntegrationTest {
 
     @Test
     void testUpdateCar_WithInvalidYear_ShouldReturn400BadRequest() throws Exception {
-        CarRequestDto updateRequest = createVaidCarRequestDto();
+        CarRequestDto updateRequest = createValidCarRequestDto();
         updateRequest.setYear(1800);
 
         mockMvc.perform(put("/api/v1/cars/1")
@@ -415,7 +393,7 @@ public class CarControllerTest extends AbstractIntegrationTest {
 
     @Test
     void testUpdateCar_WithEmptyBrand_ShouldReturn400BadRequest() throws Exception {
-        CarRequestDto updateRequest = createVaidCarRequestDto();
+        CarRequestDto updateRequest = createValidCarRequestDto();
         updateRequest.setBrand("");
 
         mockMvc.perform(put("/api/v1/cars/3")
@@ -427,7 +405,7 @@ public class CarControllerTest extends AbstractIntegrationTest {
 
     @Test
     void testUpdateCar_WithNegativePrice_ShouldReturn400BadRequest() throws Exception {
-        CarRequestDto updateRequest = createVaidCarRequestDto();
+        CarRequestDto updateRequest = createValidCarRequestDto();
         updateRequest.setPricePerDay(new BigDecimal("-100"));
 
         mockMvc.perform(put("/api/v1/cars/4")
@@ -439,7 +417,7 @@ public class CarControllerTest extends AbstractIntegrationTest {
 
     @Test
     void testUpdateCar_NonExistentId_ShouldReturn404NotFound() throws Exception {
-        CarRequestDto updateRequest = createVaidCarRequestDto();
+        CarRequestDto updateRequest = createValidCarRequestDto();
 
         mockMvc.perform(put("/api/v1/cars/999")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -480,7 +458,7 @@ public class CarControllerTest extends AbstractIntegrationTest {
     @ParameterizedTest
     @ValueSource(longs = {1, 2, 3, 7, 10})
     void testUpdateCar_MultipleValidIds_ShouldReturn200(long carId) throws Exception {
-        CarRequestDto updateRequest = createVaidCarRequestDto();
+        CarRequestDto updateRequest = createValidCarRequestDto();
 
         mockMvc.perform(put("/api/v1/cars/" + carId)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -490,4 +468,3 @@ public class CarControllerTest extends AbstractIntegrationTest {
                 .andExpect(jsonPath("$.brand", is("Dodge")));
     }
 }
-
