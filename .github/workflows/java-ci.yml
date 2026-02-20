@@ -1,4 +1,4 @@
-name: Java CI with Gradle
+name: Java CI/CD with Gradle
 
 on:
   push:
@@ -13,10 +13,9 @@ permissions:
   contents: read
 
 jobs:
-  build-and-analyze:
+  build-and-test:
     name: Build, Test and Analyze
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -28,25 +27,7 @@ jobs:
         with:
           java-version: '25'
           distribution: 'corretto'
-
-      - name: Cache SonarCloud packages
-        uses: actions/cache@v4
-        with:
-          path: ~/.sonar/cache
-          key: ${{ runner.os }}-sonar-${{ hashFiles('**/build.gradle') }}
-          restore-keys: ${{ runner.os }}-sonar-
-
-      - name: Cache Gradle packages
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-          restore-keys: ${{ runner.os }}-gradle-
-
-      - name: Validate Gradle Wrapper
-        uses: gradle/wrapper-validation-action@v2
+          cache: 'gradle'
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
@@ -58,11 +39,9 @@ jobs:
         run: |
           if [ ! -f "build/reports/jacoco/test/jacocoTestReport.xml" ]; then
             echo "❌ JaCoCo XML report not found!"
-            ls -la build/reports/jacoco/test/ || echo "Directory doesn't exist"
             exit 1
           else
             echo "✅ JaCoCo report found"
-            cat build/reports/jacoco/test/jacocoTestReport.xml | head -20
           fi
 
       - name: SonarCloud Analysis
@@ -71,24 +50,48 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: ./gradlew sonar --info
 
-      - name: Upload JaCoCo Report
+      - name: Upload Test Artifacts
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: jacoco-report-${{ github.run_number }}
-          path: build/reports/jacoco/test/
-          retention-days: 30
+          name: reports-and-results
+          path: |
+            build/reports/jacoco/test/
+            build/test-results/test/
+          retention-days: 7
 
-      - name: Upload Test Results
+      - name: Upload JAR for Deploy
         uses: actions/upload-artifact@v4
-        if: always()
         with:
-          name: test-results-${{ github.run_number }}
-          path: build/test-results/test/
-          retention-days: 30
+          name: gogo-app-jar
+          path: build/libs/GoGo-0.0.1-SNAPSHOT.jar
+          retention-days: 1
 
       - name: Publish Test Results
         uses: EnricoMi/publish-unit-test-result-action@v2
         if: always()
         with:
           files: build/test-results/test/*.xml
+
+  deploy:
+    name: Deploy to AWS Elastic Beanstalk
+    needs: build-and-test
+    if: github.ref == 'refs/heads/master' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download JAR Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: gogo-app-jar
+          path: build/libs/
+
+      - name: Deploy to Elastic Beanstalk
+        uses: einaregilsson/beanstalk-deploy@v22
+        with:
+          aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          application_name: GoGo-Server
+          environment_name: GoGo-Server-env
+          version_label: "v-${{ github.sha }}"
+          region: eu-north-1
+          deployment_package: build/libs/GoGo-0.0.1-SNAPSHOT.jar
