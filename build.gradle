@@ -22,6 +22,7 @@ ext {
     lombockMapStructVersion = '0.2.0'
     lombokVersion = '1.18.42'
     jacocoVersion = '0.8.14'
+    JsonWebTokenVersion = '0.13.0'
 }
 
 repositories {
@@ -38,18 +39,24 @@ dependencies {
     implementation 'org.flywaydb:flyway-core'
     implementation 'org.flywaydb:flyway-database-postgresql'
 
-    implementation "org.mapstruct:mapstruct:${mapstructVersion}"
-    annotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
-    annotationProcessor "org.projectlombok:lombok-mapstruct-binding:${lombockMapStructVersion}"
-
     implementation("org.projectlombok:lombok:${lombokVersion}")
     compileOnly "org.projectlombok:lombok:${lombokVersion}"
     annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
 
+    annotationProcessor "org.projectlombok:lombok-mapstruct-binding:${lombockMapStructVersion}"
+
+    implementation "org.mapstruct:mapstruct:${mapstructVersion}"
+    annotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
+
     implementation 'org.slf4j:slf4j-api'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'  // Для Spring Boot 4.0
+    testImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'
+
+    implementation "org.springframework.boot:spring-boot-starter-security"
+    implementation "io.jsonwebtoken:jjwt-api:${JsonWebTokenVersion}"
+    runtimeOnly "io.jsonwebtoken:jjwt-impl:${JsonWebTokenVersion}"
+    runtimeOnly "io.jsonwebtoken:jjwt-jackson:${JsonWebTokenVersion}"
 
     testCompileOnly "org.projectlombok:lombok:${lombokVersion}"
     testAnnotationProcessor "org.projectlombok:lombok:${lombokVersion}"
@@ -58,6 +65,7 @@ dependencies {
     testImplementation "org.testcontainers:postgresql:${testcontainersVersion}"
     testImplementation "org.testcontainers:junit-jupiter:${testcontainersVersion}"
     testImplementation 'org.springframework.boot:spring-boot-testcontainers'
+    testImplementation 'org.springframework.security:spring-security-test'
 
     testImplementation "com.github.database-rider:rider-spring:${databaseRiderVersion}"
     testImplementation "com.github.database-rider:rider-junit5:${databaseRiderVersion}"
