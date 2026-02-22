@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -15,7 +16,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
-@Profile("!test")
 @RequiredArgsConstructor
 public class SecurityConfiguration {
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
@@ -35,7 +35,11 @@ public class SecurityConfiguration {
         httpSecurity
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/v1/auth/**", "/api/v1/cars/**").permitAll()
+                        .requestMatchers("/api/v1/auth/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/cars/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/v1/cars/**").authenticated()
+                        .requestMatchers(HttpMethod.PUT, "/api/v1/cars/**").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/cars/**").authenticated()
                         .requestMatchers("/", "/index.html", "/login.html", "/register.html", "/catalog-car.html").permitAll()
                         .requestMatchers("/style.css", "/auth.js", "/index.js", "/catalog.js", "/catalog.css").permitAll()
                         .requestMatchers("/js/**", "/css/**", "/images/**", "/static/**").permitAll()

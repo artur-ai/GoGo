@@ -37,7 +37,7 @@ public abstract class AbstractIntegrationTest {
     private CountryService countryService;
 
     @Autowired
-    private JdbcTemplate jdbcTemplate;
+    protected JdbcTemplate jdbcTemplate;
 
     @BeforeEach
     void resetSequence() {

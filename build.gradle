@@ -65,6 +65,7 @@ dependencies {
     testImplementation "org.testcontainers:postgresql:${testcontainersVersion}"
     testImplementation "org.testcontainers:junit-jupiter:${testcontainersVersion}"
     testImplementation 'org.springframework.boot:spring-boot-testcontainers'
+    testImplementation 'org.springframework.security:spring-security-test'
 
     testImplementation "com.github.database-rider:rider-spring:${databaseRiderVersion}"
     testImplementation "com.github.database-rider:rider-junit5:${databaseRiderVersion}"

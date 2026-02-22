@@ -1,9 +1,9 @@
 package com.maiboroda.GoGo.controller;
 
-import com.maiboroda.GoGo.dto.AuthenticationRequest;
 import com.maiboroda.GoGo.dto.AuthenticationResponse;
 import com.maiboroda.GoGo.dto.LoginRequest;
 import com.maiboroda.GoGo.service.AuthenticationService;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -19,7 +19,7 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<AuthenticationResponse> register(
-            @RequestBody LoginRequest registerRequest
+            @Valid @RequestBody LoginRequest registerRequest
     ) {
         log.info("Try register user: {}", registerRequest.email());
         AuthenticationResponse authenticationResponse = authenticationService.register(registerRequest);
