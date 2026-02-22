@@ -33,7 +33,7 @@ public class SecurityConfiguration {
         authFilter.setFilterProcessesUrl("/api/v1/auth/authenticate");
 
         httpSecurity
-                .csrf(csrf -> csrf.disable())
+                .csrf(csrf -> csrf.disable()) // CSRF disabled: stateless JWT authentication via Authorization header, not cookies
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/v1/auth/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/cars/**").permitAll()
