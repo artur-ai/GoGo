@@ -26,9 +26,24 @@ public class ReviewServiceITest extends AbstractIntegrationTest {
         assertEquals(4, reviews.size(), "Should return 4 last reviews");
     }
     @Test
-    public void testShouldReturnAllReviews() {
+    public void shouldReturnAllReviews() {
         List<ReviewResponseDTO> reviews = reviewService.getAllReviews();
         assertNotNull(reviews, "Reviews should not be null");
         assertEquals(5, reviews.size(), "Should return all 5 reviews");
+    }
+
+    @Test
+    public void shouldReturnEmptyList() {
+        List<ReviewResponseDTO> reviews = reviewService.gerReviewList();
+        assertNotNull(reviews);
+        assertFalse(reviews.isEmpty());
+        assertTrue(reviews.get(0).getReviewText().length() > 0);
+    }
+    @Test
+    public void deleteReviewById() {
+        reviewService.deleteReviewById(1L);
+        List<ReviewResponseDTO> reviews = reviewService.getAllReviews();
+        assertNotNull(reviews, "Reviews should not be null");
+        assertEquals(4, reviews.size(), "Should return 4 reviews after deletion");
     }
 }

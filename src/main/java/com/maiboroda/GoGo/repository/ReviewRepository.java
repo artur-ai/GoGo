@@ -13,4 +13,5 @@ import java.util.List;
 public interface ReviewRepository extends JpaRepository<Review, Long> {
     @Query(value = "SELECT id, user_id, review_text FROM reviews r ORDER BY r.id DESC LIMIT :count", nativeQuery = true)
     List<Review> findLastReviews(@Param("count") int count);
+
 }
