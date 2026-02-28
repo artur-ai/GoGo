@@ -36,10 +36,8 @@
         <STARTTLS>true</STARTTLS>
         <username>${SMTP_USERNAME}</username>
         <password>${SMTP_PASSWORD}</password>
-        <to>dkfedko@yahoo.com</to>
-        <!--        <to>mauboroda.arturtu@gmail.com</to>-->
-        <!--        <to>valentynabondarenkoo@gmail.com</to>-->
-        <from>dkexhib@gmail.com</from>
+        <to>${ALERT_RECIPIENTS}</to>
+        <from>${ALERT_SENDER}</from>
         <subject>GOGO ERROR %logger{20} - %msg</subject>
 
         <layout class="ch.qos.logback.classic.PatternLayout">

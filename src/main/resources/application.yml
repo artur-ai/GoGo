@@ -16,6 +16,10 @@ spring:
           auth: true
           starttls:
             enable: true
+  alerts:
+    email:
+      sender: ${ALERT_SENDER}
+      recipients: ${ALERT_RECIPIENTS}
 
   jpa:
     hibernate:
