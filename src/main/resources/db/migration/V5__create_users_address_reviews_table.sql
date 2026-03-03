@@ -23,3 +23,9 @@ CREATE TABLE addresses (
 
     user_id BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE
 );
+
+CREATE TABLE user_roles (
+    user_id BIGINT NOT NULL,
+    roles VARCHAR(50) NOT NULL,
+    CONSTRAINT fk_user_roles_user FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
+);
