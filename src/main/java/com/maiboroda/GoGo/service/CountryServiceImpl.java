@@ -2,10 +2,11 @@ package com.maiboroda.GoGo.service;
 
 import com.maiboroda.GoGo.entity.Country;
 import com.maiboroda.GoGo.repository.CountryRepository;
-import jakarta.annotation.PostConstruct;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -20,12 +21,11 @@ public class CountryServiceImpl implements CountryService {
     private final CountryRepository countryRepository;
     private final Map<String, Country> countryCache = new ConcurrentHashMap<>();
 
-    @PostConstruct
+    @EventListener(ApplicationReadyEvent.class)
     public void initCache() {
         log.info("Loading countries in cache...");
 
         List<Country> countries = countryRepository.findAll();
-
 
         countries.forEach(country ->
                 countryCache.put(country.getName().toLowerCase(), country)
