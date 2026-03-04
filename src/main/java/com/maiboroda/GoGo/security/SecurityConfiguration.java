@@ -36,12 +36,13 @@ public class SecurityConfiguration {
                 .csrf(csrf -> csrf.disable()) // CSRF disabled: stateless JWT authentication via Authorization header, not cookies
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/v1/auth/**").permitAll()
+                        .requestMatchers("/api/v1/cars/admin/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/api/v1/cars/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/v1/cars/**").authenticated()
                         .requestMatchers(HttpMethod.PUT, "/api/v1/cars/**").authenticated()
                         .requestMatchers(HttpMethod.DELETE, "/api/v1/cars/**").authenticated()
-                        .requestMatchers("/", "/index.html", "/login.html", "/register.html", "/catalog-car.html").permitAll()
-                        .requestMatchers("/style.css", "/auth.js", "/index.js", "/catalog.js", "/catalog.css").permitAll()
+                        .requestMatchers("/", "/index.html", "/login.html", "/register.html", "/catalog-car.html", "/admin-panel.html").permitAll()
+                        .requestMatchers("/style.css", "/auth.js", "/index.js", "/catalog.js", "/catalog.css", "/admin.js", "/admin.css").permitAll()
                         .requestMatchers("/js/**", "/css/**", "/images/**", "/static/**").permitAll()
                         .anyRequest().authenticated()
                 )

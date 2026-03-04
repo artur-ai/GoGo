@@ -23,8 +23,13 @@ public class JwtService {
     }
 
     public String generateToken(UserDetails userDetails) {
+        var authorities = userDetails.getAuthorities().stream()
+                .map(auth -> auth.getAuthority())
+                .toList();
+
         return Jwts.builder()
                 .subject(userDetails.getUsername())
+                .claim("authorities", authorities)
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + jwtExpiration))
                 .signWith(getSigningKey())

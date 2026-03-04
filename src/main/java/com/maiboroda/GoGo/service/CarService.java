@@ -15,4 +15,6 @@ public interface CarService {
     CarResponseDto updateCarById(CarRequestDto carRequestDto, long id);
 
     List<CarResponseDto> findCarByCountry(String countryName);
+
+    CarResponseDto addCarWithNotification(CarRequestDto carRequestDto, String adminEmail);
 }

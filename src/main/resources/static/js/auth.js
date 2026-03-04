@@ -26,8 +26,8 @@ if (registerForm) {
 
             if (response.ok) {
                 const data = await response.json();
-                localStorage.setItem('jwtToken', data.token);
-                localStorage.setItem('userName', data.firstName);
+                localStorage.setItem('token', data.token);
+                localStorage.setItem('firstName', data.firstName);
 
                 document.getElementById('success-message').style.display = 'block';
                 setTimeout(() => {
@@ -63,8 +63,8 @@ if (loginForm) {
 
             if (response.ok) {
                 const data = await response.json();
-                localStorage.setItem('jwtToken', data.token);
-                localStorage.setItem('userName', data.firstName);
+                localStorage.setItem('token', data.token);
+                localStorage.setItem('firstName', data.firstName);
                 window.location.href = 'index.html';
             } else {
                 alert('Невірний логін або пароль');
@@ -77,8 +77,8 @@ if (loginForm) {
 }
 
 function checkAuthStatus() {
-    const token = localStorage.getItem('jwtToken');
-    const name = localStorage.getItem('userName');
+    const token = localStorage.getItem('token');
+    const name = localStorage.getItem('firstName');
 
     const guestNav = document.getElementById('guest-nav');
     const userNav = document.getElementById('user-nav');
@@ -87,9 +87,9 @@ function checkAuthStatus() {
     if (token && userNav && guestNav) {
         guestNav.style.display = 'none';
         userNav.style.display = 'flex';
-       if(userNameSpan) {
-                   userNameSpan.innerText = name;
-               }
+        if(userNameSpan) {
+            userNameSpan.innerText = name;
+        }
     } else if (userNav && guestNav) {
         guestNav.style.display = 'flex';
         userNav.style.display = 'none';
@@ -97,8 +97,8 @@ function checkAuthStatus() {
 }
 
 function logout() {
-    localStorage.removeItem('jwtToken');
-    localStorage.removeItem('userEmail');
+    localStorage.removeItem('token');
+    localStorage.removeItem('firstName');
     window.location.href = 'login.html';
 }
 
