@@ -57,6 +57,7 @@ public abstract class AbstractIntegrationTest {
         registry.add("spring.datasource.username", postgreSQLContainer::getUsername);
         registry.add("spring.datasource.password", postgreSQLContainer::getPassword);
         registry.add("spring.jpa.hibernate.ddl-auto", () -> "create-drop");
+        registry.add("spring.flyway.enabled", () -> "false");
         registry.add("application.security.jwt.secret-key", () -> "dGVzdC1zZWNyZXQta2V5LWZvci10ZXN0aW5nLW9ubHktMzItY2hhcnM=");
         registry.add("application.security.jwt.expiration", () -> "86400000");
     }
