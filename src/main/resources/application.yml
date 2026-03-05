@@ -23,8 +23,8 @@ spring:
   mail:
     host: smtp.gmail.com
     port: 587
-    username: mauboroda.arturtu@gmail.com
-    password: beyp mznc bnkv oied
+    username:  ${ARTUR_EMAIL}
+    password: ${GMAIL_PASSWORD}
     properties:
       mail:
         smtp:
@@ -60,4 +60,4 @@ gogo:
 
 app:
   notification:
-    emails: mauboroda.arturtu@gmail.com,mentor-email@gmail.com,colleague-email@gmail.com
+    emails: ${ARTUR_EMAIL},${DANYLO_EMAIL},${VALENTYNA_EMAIL}

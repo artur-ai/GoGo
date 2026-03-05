@@ -18,13 +18,8 @@ public class CarNotificationConsumer {
 
     @KafkaListener(topics = TOPIC, groupId = GROUP_ID)
     public void consumerCarNotification(CarNotificationDto notification) {
-        log.info("📢 NEW CAR ADDED! Brand: {}, Model: {}, Year: {}",
-                notification.brand(),
-                notification.model(),
-                notification.year());
-        log.info("   Price per day: {}, Admin: {}",
-                notification.pricePerDay(),
-                notification.adminEmail());
+        log.info("   NEW CAR ADDED! Brand: {}, Model: {}, Year: {}", notification.brand(), notification.model(), notification.year());
+        log.info("   Price per day: {}, Admin: {}", notification.pricePerDay(), notification.adminEmail());
         log.info("   Created at: {}", notification.createdAt());
 
         emailNotificationService.sendCarNotification(notification);

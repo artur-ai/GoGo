@@ -24,7 +24,7 @@ public class EmailNotificationServiceImpl implements EmailNotificationService {
 
             SimpleMailMessage message = new SimpleMailMessage();
             message.setTo(recipients);
-            message.setFrom("noreply@gogo.com");
+            message.setFrom("mauboroda.arturtu@gmail.com");
             message.setSubject("New car added to GoGo: " + notification.brand() + " " + notification.model());
             message.setText(buildEmailContent(notification));
 
@@ -33,7 +33,6 @@ public class EmailNotificationServiceImpl implements EmailNotificationService {
         } catch (Exception exception) {
             log.error("Failed to send email notification", exception);
         }
-
     }
 
     private String buildEmailContent(CarNotificationDto notification) {
@@ -45,8 +44,8 @@ public class EmailNotificationServiceImpl implements EmailNotificationService {
                         "Fuel Type: %s\n" +
                         "Engine: %s\n\n" +
                         "💰 Pricing:\n" +
-                        "  Per Day: $%.2f\n" +
-                        "  Per Minute: $%.2f\n" +
+                        "  Per Day: ₴%.2f\n" +
+                        "  Per Minute: ₴%.2f\n" +
                         "📍 Added by: %s\n" +
                         "⏰ Created at: %s\n\n" +
                         "Check it out in the catalog!",

@@ -4,79 +4,84 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Panel - GoGo</title>
-    <link rel="stylesheet" href="/admin.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="admin.css">
 </head>
 <body>
 
 <header>
-    <div class="logo">GoGo Admin</div>
-    <button id="logoutBtn" class="logout-btn">Logout</button>
+    <div class="logo">GoGo</div>
+    <button class="burger" id="burger">&#9776;</button>
+    <nav id="nav-menu">
+        <ul class="nav-links">
+            <li><a href="/">Головна</a></li>
+        </ul>
+
+        <div id="user-nav" style="display: flex; gap: 15px; align-items: center;">
+      <span style="color: black; font-weight: 500; font-size: 16px;">
+        Вітаємо, <b id="user-name-display">Адмін</b>
+      </span>
+            <button onclick="logout()" class="cta-button" style="padding: 8px 15px; font-size: 14px;">Вийти</button>
+        </div>
+    </nav>
 </header>
 
-<div class="admin-layout">
-    <div class="form-container">
-        <h2>Add New Car</h2>
-        <form id="addCarForm" class="admin-form">
-            <div class="form-group">
-                <label>Brand *</label>
-                <input type="text" id="brand" required>
-            </div>
-            <div class="form-group">
-                <label>Model *</label>
-                <input type="text" id="model" required>
-            </div>
-            <div class="form-group">
-                <label>Year *</label>
-                <input type="number" id="year" min="1990" max="2100" required>
-            </div>
-            <div class="form-group">
-                <label>Fuel Type *</label>
-                <select id="fuelType" required>
-                    <option value="">Select fuel type</option>
-                    <option value="Petrol">Petrol</option>
-                    <option value="Diesel">Diesel</option>
-                    <option value="Electric">Electric</option>
-                    <option value="Hybrid">Hybrid</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>Engine *</label>
-                <input type="text" id="engine" placeholder="e.g., 2.0L" required>
-            </div>
-            <div class="form-group">
-                <label>Price per Day ($) *</label>
-                <input type="number" id="pricePerDay" min="0" step="0.01" required>
-            </div>
-            <div class="form-group">
-                <label>Price per Minute ($) *</label>
-                <input type="number" id="pricePerMinute" min="0" step="0.01" required>
-            </div>
-            <div class="form-group">
-                <label>Insurance Price ($)</label>
-                <input type="number" id="insurancePrice" min="0" step="0.01" value="0">
-            </div>
-            <div class="form-group">
-                <label>Image URL</label>
-                <input type="url" id="imageUrl" placeholder="https://...">
-            </div>
-            <button type="submit" class="btn-submit">Add Car</button>
-        </form>
-        <div id="message" class="message"></div>
-    </div>
-
-    <div class="cars-section">
-        <h2>All Cars</h2>
-        <div id="admin-car-list" class="admin-car-list">
-            <p>Завантаження...</p>
-        </div>
-        <div class="pagination">
-            <button id="prev-btn" disabled>← Назад</button>
-            <span id="page-info">Сторінка 1</span>
-            <button id="next-btn">Вперед →</button>
+<main class="admin-main">
+    <div class="admin-container">
+        <div class="form-container">
+            <h2>Додати нове авто</h2>
+            <form id="addCarForm" class="admin-form">
+                <div class="form-group">
+                    <label>Марка *</label>
+                    <input type="text" id="brand" required>
+                </div>
+                <div class="form-group">
+                    <label>Модель *</label>
+                    <input type="text" id="model" required>
+                </div>
+                <div class="form-group">
+                    <label>Рік *</label>
+                    <input type="number" id="year" min="1990" max="2100" required>
+                </div>
+                <div class="form-group">
+                    <label>Тип палива *</label>
+                    <select id="fuelType" required>
+                        <option value="">Вибери тип</option>
+                        <option value="Petrol">Бензин</option>
+                        <option value="Diesel">Дизель</option>
+                        <option value="Electric">Електро</option>
+                        <option value="Hybrid">Гібрид</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Двигун *</label>
+                    <input type="text" id="engine" placeholder="напр., 2.0L" required>
+                </div>
+                <div class="form-group">
+                    <label>Ціна за день ($) *</label>
+                    <input type="number" id="pricePerDay" min="0" step="0.01" required>
+                </div>
+                <div class="form-group">
+                    <label>Ціна за хвилину ($) *</label>
+                    <input type="number" id="pricePerMinute" min="0" step="0.01" required>
+                </div>
+                <div class="form-group">
+                    <label>Страховка ($)</label>
+                    <input type="number" id="insurancePrice" min="0" step="0.01" value="0">
+                </div>
+                <div class="form-group">
+                    <label>URL фото</label>
+                    <input type="url" id="imageUrl" placeholder="https://...">
+                </div>
+                <button type="submit" class="cta-button">Додати авто</button>
+            </form>
+            <div id="message" class="message"></div>
         </div>
     </div>
-</div>
+</main>
 
 <script src="js/admin.js"></script>
+<script src="js/auth.js"></script>
 </body>
 </html>

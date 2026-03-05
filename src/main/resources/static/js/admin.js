@@ -1,20 +1,25 @@
 window.addEventListener('DOMContentLoaded', () => {
     const token = localStorage.getItem('token');
+    const firstName = localStorage.getItem('firstName');
 
     if (!token) {
         window.location.href = '/login.html';
         return;
     }
+
+    const userNameDisplay = document.getElementById('user-name-display');
+    if (userNameDisplay && firstName) {
+        userNameDisplay.textContent = firstName;
+    }
 });
 
 const form = document.getElementById('addCarForm');
 const messageDiv = document.getElementById('message');
-const logoutBtn = document.getElementById('logoutBtn');
 
 form.addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    showMessage('Adding car...', 'loading');
+    showMessage('Додаю авто...', 'loading');
 
     const carData = {
         brand: document.getElementById('brand').value,
@@ -25,8 +30,10 @@ form.addEventListener('submit', async (e) => {
         pricePerDay: parseFloat(document.getElementById('pricePerDay').value),
         pricePerMinute: parseFloat(document.getElementById('pricePerMinute').value),
         insurancePrice: parseFloat(document.getElementById('insurancePrice').value) || 0,
-        imageUrl: document.getElementById('imageUrl').value || null
+        imageUrl: document.getElementById('imageUrl').value || ""
     };
+
+    console.log('Відправляю дані:', JSON.stringify(carData, null, 2));
 
     try {
         const token = localStorage.getItem('token');
@@ -42,14 +49,14 @@ form.addEventListener('submit', async (e) => {
 
         if (!response.ok) {
             if (response.status === 403) {
-                showMessage('Access denied! Only admins can add cars.', 'error');
+                showMessage('Доступ заборонено! Тільки адміни можуть додавати авто.', 'error');
                 return;
             }
             throw new Error(`HTTP error! status: ${response.status}`);
         }
 
         const result = await response.json();
-        showMessage(`✅ Car "${result.brand} ${result.model}" added successfully! Check your email for notifications.`, 'success');
+        showMessage(`✅ Авто "${result.brand} ${result.model}" успішно додано!`, 'success');
         form.reset();
 
         setTimeout(() => {
@@ -58,14 +65,8 @@ form.addEventListener('submit', async (e) => {
 
     } catch (error) {
         console.error('Error:', error);
-        showMessage('Error adding car: ' + error.message, 'error');
+        showMessage('Помилка: ' + error.message, 'error');
     }
-});
-
-logoutBtn.addEventListener('click', () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('firstName');
-    window.location.href = '/login.html';
 });
 
 function showMessage(text, type) {

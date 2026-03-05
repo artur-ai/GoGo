@@ -10,62 +10,34 @@ body {
     color: #333;
 }
 
-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px 40px;
-    border-bottom: 2px solid #000;
-    background: #fff;
+.admin-main {
+    margin: 0;
+    padding: 40px 20px;
 }
 
-.logo {
-    font-size: 20px;
-    font-weight: bold;
-}
-
-.logout-btn {
-    background-color: #000;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 15px;
-    transition: background-color 0.3s;
-}
-
-.logout-btn:hover {
-    background-color: #454e57;
-}
-
-.admin-layout {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 30px;
-    max-width: 1200px;
-    margin: 40px auto;
-    padding: 0 20px;
-    align-items: start;
+.admin-container {
+    max-width: 600px;
+    margin: 0 auto;
 }
 
 .form-container {
     background: #fff;
     border-radius: 20px;
     box-shadow: 0 8px 20px rgba(0,0,0,0.08);
-    padding: 30px;
+    padding: 40px;
 }
 
 .form-container h2 {
-    font-size: 22px;
-    margin-bottom: 25px;
+    font-size: 28px;
+    margin-bottom: 30px;
     color: #1a1a1a;
+    text-align: center;
 }
 
 .admin-form {
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: 20px;
 }
 
 .form-group {
@@ -75,8 +47,8 @@ header {
 
 label {
     font-weight: 600;
-    font-size: 14px;
-    margin-bottom: 5px;
+    font-size: 15px;
+    margin-bottom: 8px;
     color: #1a1a1a;
 }
 
@@ -84,39 +56,28 @@ input[type="text"],
 input[type="number"],
 input[type="url"],
 select {
-    padding: 10px 12px;
-    border: 1px solid #ddd;
+    padding: 12px;
+    border: 2px solid #ddd;
     border-radius: 8px;
     font-size: 15px;
     font-family: inherit;
-    transition: border-color 0.3s;
+    transition: all 0.3s;
 }
 
 input:focus, select:focus {
     outline: none;
     border-color: #000;
+    background-color: #f9f9f9;
 }
 
-.btn-submit {
+.form-container .cta-button {
     padding: 12px;
-    background-color: #000;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    font-size: 15px;
-    font-weight: 600;
-    cursor: pointer;
     margin-top: 10px;
-    transition: background-color 0.3s;
-}
-
-.btn-submit:hover {
-    background-color: #454e57;
 }
 
 .message {
-    margin-top: 15px;
-    padding: 12px;
+    margin-top: 20px;
+    padding: 15px;
     border-radius: 8px;
     text-align: center;
     font-weight: 500;
@@ -144,89 +105,12 @@ input:focus, select:focus {
     border: 1px solid #ccc;
 }
 
-.cars-section {
-    background: #fff;
-    border-radius: 20px;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
-    padding: 30px;
-}
-
-.cars-section h2 {
-    font-size: 22px;
-    margin-bottom: 20px;
-    color: #1a1a1a;
-}
-
-.admin-car-list {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
-
-.car-card {
-    display: flex;
-    gap: 15px;
-    background: #f2f5f9;
-    border-radius: 12px;
-    overflow: hidden;
-    align-items: center;
-    padding: 10px;
-}
-
-.car-card img {
-    width: 120px;
-    height: 80px;
-    object-fit: contain;
-    background: #e9edf2;
-    border-radius: 8px;
-}
-
-.car-info h3 {
-    font-size: 16px;
-    margin-bottom: 4px;
-}
-
-.car-info p {
-    font-size: 13px;
-    color: #666;
-    margin: 2px 0;
-}
-
-.pagination {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 15px;
-    margin-top: 20px;
-}
-
-.pagination button {
-    padding: 10px 20px;
-    background-color: #000;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 14px;
-    transition: background-color 0.3s;
-}
-
-.pagination button:hover:not(:disabled) {
-    background-color: #454e57;
-}
-
-.pagination button:disabled {
-    background-color: #ccc;
-    cursor: not-allowed;
-}
-@media (max-width: 900px) {
-    .admin-layout {
-        grid-template-columns: 1fr;
+@media (max-width: 768px) {
+    .form-container {
+        padding: 25px;
     }
-}
 
-@media (max-width: 480px) {
-    header {
-        padding: 10px 20px;
+    .form-container h2 {
+        font-size: 22px;
     }
 }
