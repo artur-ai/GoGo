@@ -122,7 +122,7 @@ jobs:
           aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           application_name: GoGo-Server
-          environment_name: GoGo-Server-env
+          environment_name: GoGo-Server-env-1
           version_label: ${{ env.VERSION }}
           region: eu-north-1
           deployment_package: build/libs/GoGo-0.0.1-SNAPSHOT.jar
