@@ -8,28 +8,26 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header>
-    <div class="logo">GoGo</div>
-    <button class="burger" id="burger">&#9776;</button>
-    <nav id="nav-menu">
-      <div class="nav-links">
-        <a href="#carsharing">Каршерінг</a>
-        <a href="#about">Про нас</a>
-        <a href="#contacts">Контакти</a>
-      </div>
+<header>
+  <div class="logo">GoGo</div>
+  <button class="burger" id="burger">&#9776;</button>
+  <nav id="nav-menu">
+    <ul class="nav-links">
+      <li><a href="#carsharing">Каршерінг</a></li>
+      <li><a href="#about">Про нас</a></li>
+      <li><a href="#contacts">Контакти</a></li>
+      <li id="admin-btn" style="display: none;"><a href="/admin-panel.html">Admin Panel</a></li>
+    </ul>
 
-      <div id="guest-nav" style="display: flex; gap: 15px; align-items: center;">
-        <a href="login.html" class="login-button">Вхід</a>
-
-        <a href="register.html" class="cta-button">Зареєструватись</a>
-      </div>
+    <div id="guest-nav" style="display: flex; gap: 15px; align-items: center;">
+      <a href="login.html" class="login-button">Вхід</a>
+      <a href="register.html" class="cta-button">Зареєструватись</a>
+    </div>
 
       <div id="user-nav" style="display: none; gap: 15px; align-items: center; margin-left: 15px;">
-
-          <span style="color: black; font-weight: 500; font-size: 16px;">
-              Вітаємо, <b id="user-name-display">Користувач</b>
-          </span>
-
+    <span style="color: black; font-weight: 500; font-size: 16px;">
+        Вітаємо, <b id="user-name-display">Користувач</b>
+    </span>
         <button onclick="logout()" class="cta-button" style="padding: 8px 15px; font-size: 14px;">Вийти</button>
       </div>
     </nav>
