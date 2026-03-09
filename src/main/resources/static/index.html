@@ -17,7 +17,21 @@
         <a href="#about">Про нас</a>
         <a href="#contacts">Контакти</a>
       </div>
-      <a href="register.html" class="cta-button">Зареєструватись</a>
+
+      <div id="guest-nav" style="display: flex; gap: 15px; align-items: center;">
+        <a href="login.html" class="login-button">Вхід</a>
+
+        <a href="register.html" class="cta-button">Зареєструватись</a>
+      </div>
+
+      <div id="user-nav" style="display: none; gap: 15px; align-items: center; margin-left: 15px;">
+
+          <span style="color: black; font-weight: 500; font-size: 16px;">
+              Вітаємо, <b id="user-name-display">Користувач</b>
+          </span>
+
+        <button onclick="logout()" class="cta-button" style="padding: 8px 15px; font-size: 14px;">Вийти</button>
+      </div>
     </nav>
   </header>
 
@@ -196,4 +210,5 @@
               </footer>
 </body>
 <script src="js/index.js"></script>
+<script src="js/auth.js"></script>
 </html>

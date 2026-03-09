@@ -10,20 +10,25 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import java.math.BigDecimal;
 
 import static org.hamcrest.Matchers.*;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 
 @DBRider
 @ActiveProfiles("test")
+@WithMockUser(roles = "USER")
 @DataSet(value = "datasets/cars.yml", cleanBefore = true, cleanAfter = false)
 public class CarControllerTest extends AbstractIntegrationTest {
 
@@ -40,6 +45,7 @@ public class CarControllerTest extends AbstractIntegrationTest {
                 new BigDecimal("15.50"), new BigDecimal("1200.00"), new BigDecimal("10.00"),
                 "https://test.com/dodge.png");
     }
+
 
     @Test
     void testReturnAllCars() throws Exception {
@@ -468,3 +474,4 @@ public class CarControllerTest extends AbstractIntegrationTest {
                 .andExpect(jsonPath("$.brand", is("Dodge")));
     }
 }
+

@@ -2,8 +2,6 @@ let currentPage = 0;
 const pageSize = 6;
 
 document.addEventListener('DOMContentLoaded', () => {
-    console.log("Додаток завантажено. Ініціалізація...");
-
     const prevBtn = document.getElementById('prev-btn');
     const nextBtn = document.getElementById('next-btn');
 
@@ -30,7 +28,6 @@ async function loadCars(page) {
     container.innerHTML = '<h2 style="text-align: center; grid-column: 1/-1;">Завантаження...</h2>';
 
     const apiUrl = `/api/v1/cars?page=${page}&size=${pageSize}`;
-    console.log("Запит до API:", apiUrl);
 
     try {
         const response = await fetch(apiUrl);
@@ -40,8 +37,6 @@ async function loadCars(page) {
         }
 
         const data = await response.json();
-        console.log("Отримані дані від сервера:", data);
-
         const cars = data.content;
 
         container.innerHTML = '';
@@ -69,19 +64,20 @@ async function loadCars(page) {
 
 function renderCarCard(car) {
     const bookingUrl = `Cars-booking/${car.model}.html`;
+
     return `
         <div class="car-card">
-          <img src="${car.imageUrl}" alt="${car.brand} ${car.model}" class="car-img">
-          <div class="car-info">
-            <h2>${car.brand} ${car.model} ${car.year}</h2>
-            <p>${car.engine} • ${car.fuelType}</p>
-            <ul>
-              <li>Хвилина: ${car.pricePerMinute} грн</li>
-              <li>Доба: ${car.pricePerDay} грн</li>
-              <li>Страхування: ${car.insurancePrice} грн</li>
-            </ul>
-            <a href="${bookingUrl}" class="select-button">Вибрати це авто</a>
-          </div>
+            <img src="${car.imageUrl}" alt="${car.brand} ${car.model}" class="car-img">
+            <div class="car-info">
+                <h2>${car.brand} ${car.model} ${car.year}</h2>
+                <p>${car.engine} • ${car.fuelType}</p>
+                <ul>
+                    <li>Хвилина: ${car.pricePerMinute} грн</li>
+                    <li>Доба: ${car.pricePerDay} грн</li>
+                    <li>Страхування: ${car.insurancePrice} грн(хв)</li>
+                    <a href="${bookingUrl}" class="select-button">Вибрати це авто</a>
+                </ul>
+            </div>
         </div>
     `;
 }
