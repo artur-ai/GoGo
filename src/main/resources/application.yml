@@ -13,13 +13,40 @@ spring:
 
   flyway:
     enabled: true
-    baseline-on-migrate: true
 
-data:
-  web:
-    pageable:
-      default-page-size: 6
-      max-page-size: 15
+  data:
+    web:
+      pageable:
+        default-page-size: 6
+        max-page-size: 15
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username:  ${ARTUR_EMAIL}
+    password: ${GMAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      acks: all
+    consumer:
+      bootstrap-servers: localhost:9092
+      group-id: gogo-group
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "*"
+        spring.json.type.mapping: "carNotification:com.maiboroda.GoGo.dto.CarNotificationDto"
 
 application:
   security:
@@ -30,3 +57,7 @@ application:
 gogo:
   settings:
     random-number: 3
+
+app:
+  notification:
+    emails: ${ARTUR_EMAIL},${DANYLO_EMAIL},${VALENTYNA_EMAIL}

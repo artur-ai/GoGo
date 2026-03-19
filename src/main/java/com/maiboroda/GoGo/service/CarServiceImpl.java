@@ -1,10 +1,12 @@
 package com.maiboroda.GoGo.service;
 
 
+import com.maiboroda.GoGo.dto.CarNotificationDto;
 import com.maiboroda.GoGo.dto.CarRequestDto;
 import com.maiboroda.GoGo.dto.CarResponseDto;
 import com.maiboroda.GoGo.dto.PagedResponse;
 import com.maiboroda.GoGo.entity.Car;
+import com.maiboroda.GoGo.kafka.CarNotificationProducer;
 import com.maiboroda.GoGo.mapper.CarMapper;
 import com.maiboroda.GoGo.repository.CarRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -17,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import org.springframework.data.domain.Pageable;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Slf4j
@@ -26,6 +29,7 @@ public class CarServiceImpl implements CarService {
     private final CarRepository carRepository;
     private final CarMapper carMapper;
     private final CountryService countryService;
+    private final CarNotificationProducer carNotificationProducer;
 
     @Value("${gogo.settings.random-number}")
     private int randomNumber;
@@ -88,5 +92,27 @@ public class CarServiceImpl implements CarService {
         return cars.stream()
                 .map(carMapper::toResponseDto)
                 .toList();
+    }
+
+    @Override
+    public CarResponseDto addCarWithNotification(CarRequestDto carRequestDto, String adminEmail) {
+        CarResponseDto responseDto = addCar(carRequestDto);
+
+        CarNotificationDto notification = new CarNotificationDto(
+                responseDto.getId(),
+                responseDto.getBrand(),
+                responseDto.getModel(),
+                responseDto.getYear(),
+                responseDto.getFuelType(),
+                responseDto.getEngine(),
+                responseDto.getPricePerDay(),
+                responseDto.getPricePerMinute(),
+                responseDto.getImageUrl(),
+                LocalDateTime.now(),
+                adminEmail
+        );
+
+        carNotificationProducer.sendCarNotification(notification);
+        return responseDto;
     }
 }

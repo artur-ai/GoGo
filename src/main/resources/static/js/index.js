@@ -42,6 +42,25 @@ async function loadFeaturedCars() {
     }
 }
 
+function checkAdminRole() {
+    const token = localStorage.getItem('token');
+    if (token) {
+        try {
+            const payload = JSON.parse(atob(token.split('.')[1]));
+            const authorities = payload.authorities || [];
+
+            if (authorities.includes('ROLE_ADMIN')) {
+                const adminBtn = document.getElementById('admin-btn');
+                if (adminBtn) {
+                    adminBtn.style.display = 'block';
+                }
+            }
+        } catch (e) {
+            console.error('Failed to parse token', e);
+        }
+    }
+}
 
     loadFeaturedCars();
+    checkAdminRole();
 });
