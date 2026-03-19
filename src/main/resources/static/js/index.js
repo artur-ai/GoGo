@@ -43,8 +43,13 @@ async function loadFeaturedCars() {
     }
 
     function loadReviews() {
-            fetch('http://localhost:8080/api/reviews')
-                .then(response => response.json())
+            fetch('/api/reviews')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`Status: ${response.status}`);
+                    }
+                    return response.json();
+                })
                 .then(reviews => {
                     displayReviews(reviews);
                 })
@@ -65,8 +70,12 @@ async function loadFeaturedCars() {
                 const reviewCard = document.createElement('div');
                 reviewCard.className = 'review-card';
 
+                const firstName = review.firstName || 'Користувач';
+                const town = review.town || 'місто не вказано';
+                const age = review.dateOfBirth ? `${calculateAge(review.dateOfBirth)} років` : 'вік не вказано';
+
                 reviewCard.innerHTML = `
-                    <h3>${review.firstName}, ${calculateAge(review.dateOfBirth)} років, ${review.town}</h3>
+                    <h3>${firstName}, ${age}, ${town}</h3>
                     <p>${review.reviewText}</p>
                 `;
 

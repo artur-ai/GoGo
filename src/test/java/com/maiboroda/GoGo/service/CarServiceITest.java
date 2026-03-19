@@ -125,7 +125,7 @@ public class CarServiceITest extends AbstractIntegrationTest {
 
     @Test
     void testGetRandomCars_UsesRepositoryMethod() {
-        ReflectionTestUtils.setField(carService, "randomNumber", 3);
+        ReflectionTestUtils.setField(carService, "randomNumberCar", 3);
 
         List<CarResponseDto> serviceCars = carService.getRandomCars();
         List<Car> repositoryCars = carRepository.getRandomCars(3);

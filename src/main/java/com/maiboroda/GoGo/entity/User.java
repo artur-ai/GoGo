@@ -32,16 +32,16 @@ public class User {
     @Column(nullable = true, length = 55, name = "middle_name")
     private String middleName;
 
-    @Column(nullable = false, length = 55, name = "date_of_birth")
+    @Column(nullable = true, name = "date_of_birth")
     private LocalDate dateOfBirth;
 
     @Column(nullable = false, length = 15, name = "driver_license_id")
     private String driverLicenseId;
 
-    @Column(nullable = false,unique = true, length = 254)
+    @Column(nullable = false, unique = true, length = 254)
     private String email;
 
-    @Column(nullable = false, length = 20)
+    @Column(nullable = false, length = 255)
     private String password;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
