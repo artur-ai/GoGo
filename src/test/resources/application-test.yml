@@ -2,6 +2,8 @@ spring:
   autoconfigure:
     exclude:
       - org.springframework.boot.autoconfigure.kafka.KafkaAutoConfiguration
+      - org.springframework.boot.autoconfigure.mail.MailSenderAutoConfiguration
+      - org.springframework.boot.autoconfigure.mail.MailSenderValidatorAutoConfiguration
   jpa:
     hibernate:
       ddl-auto: none
