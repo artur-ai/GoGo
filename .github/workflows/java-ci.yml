@@ -4,7 +4,7 @@ on:
   push:
     branches: [ "master" ]
   pull_request:
-    types: [opened, synchronize, reopened]
+    types: [ opened, synchronize, reopened ]
   workflow_dispatch:
 
 permissions:
@@ -23,11 +23,11 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Set up JDK 23
+      - name: Set up JDK 25
         uses: actions/setup-java@v4
         with:
-          java-version: '23'
-          distribution: 'temurin'
+          java-version: '25'
+          distribution: 'corretto'
 
       - name: Cache SonarCloud packages
         uses: actions/cache@v4
@@ -46,7 +46,7 @@ jobs:
           restore-keys: ${{ runner.os }}-gradle-
 
       - name: Validate Gradle Wrapper
-        uses: gradle/wrapper-validation-action@v2
+        uses: gradle/wrapper-validation-action@v3
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
@@ -87,8 +87,42 @@ jobs:
           path: build/test-results/test/
           retention-days: 30
 
+      - name: Upload JAR for Deploy
+        uses: actions/upload-artifact@v4
+        with:
+          name: gogo-app-jar
+          path: build/libs/GoGo-0.0.1-SNAPSHOT.jar
+          retention-days: 1
+
       - name: Publish Test Results
         uses: EnricoMi/publish-unit-test-result-action@v2
         if: always()
         with:
           files: build/test-results/test/*.xml
+
+  deploy:
+    name: Deploy to AWS Elastic Beanstalk
+    needs: build-and-analyze
+    if: github.ref == 'refs/heads/master' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Download JAR Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: gogo-app-jar
+          path: build/libs/
+
+      - name: Set version label
+        run: echo "VERSION=v${{ github.run_number }}-${GITHUB_SHA::7}" >> $GITHUB_ENV
+
+      - name: Deploy to Elastic Beanstalk
+        uses: einaregilsson/beanstalk-deploy@v22
+        with:
+          aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          application_name: GoGo-Server
+          environment_name: GoGo-Server-env-1
+          version_label: ${{ env.VERSION }}
+          region: eu-north-1
+          deployment_package: build/libs/GoGo-0.0.1-SNAPSHOT.jar

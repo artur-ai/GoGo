@@ -1,7 +1,6 @@
 spring:
   application:
     name: GoGo
-
   datasource:
     url: jdbc:postgresql://localhost:5432/car_sharing
     username: ${DB_USERNAME}
@@ -10,10 +9,23 @@ spring:
   jpa:
     hibernate:
       ddl-auto: validate
+    show-sql: true
 
   flyway:
     enabled: true
     baseline-on-migrate: true
+
+data:
+  web:
+    pageable:
+      default-page-size: 6
+      max-page-size: 15
+
+application:
+  security:
+    jwt:
+      secret-key: ${SECRET_KEY}
+      expiration: ${EXPIRATION}
 
 gogo:
   settings:
