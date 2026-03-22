@@ -18,7 +18,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @DataSet("datasets/reviews.yml")
 @AutoConfigureMockMvc(addFilters = false)
 @ActiveProfiles("test")
-public class ReviewControllerTest extends AbstractIntegrationTest {
+class ReviewControllerTest extends AbstractIntegrationTest {
 
     @Autowired
     private MockMvc mockMvc;
