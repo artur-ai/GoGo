@@ -37,6 +37,7 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/v1/auth/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/cars/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/reviews/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/v1/cars/**").authenticated()
                         .requestMatchers(HttpMethod.PUT, "/api/v1/cars/**").authenticated()
                         .requestMatchers(HttpMethod.DELETE, "/api/v1/cars/**").authenticated()

@@ -36,12 +36,65 @@ async function loadFeaturedCars() {
             ? cars.map(car => renderCarCard(car)).join('')
             : '<p>Машини не знайдено</p>';
 
-    } catch (error) {
-        console.error('Error:', error);
-        container.innerHTML = '<p style="color: red;">Помилка завантаження</p>';
+        } catch (error) {
+            console.error('Помилка завантаження випадкових машин:', error);
+            container.innerHTML = '<p style="text-align: center; color: red; grid-column: 1/-1;">Не вдалося завантажити автомобілі</p>';
+        }
     }
-}
 
+    function loadReviews() {
+            fetch('/api/reviews')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`Status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(reviews => {
+                    displayReviews(reviews);
+                })
+                .catch(error => {
+                    console.error('Помилка завантаження відгуків:', error);
+                });
+        }
+
+        function displayReviews(reviews) {
+                const reviewList = document.querySelector('.review-list');
+
+                if (!reviewList) {
+                    console.warn('Container .review-list not found');
+                    return;
+                }
+        reviewList.innerHTML = '';
+    reviews.forEach(review => {
+                const reviewCard = document.createElement('div');
+                reviewCard.className = 'review-card';
+
+                const firstName = review.firstName || 'Користувач';
+                const town = review.town || 'місто не вказано';
+                const age = review.dateOfBirth ? `${calculateAge(review.dateOfBirth)} років` : 'вік не вказано';
+
+                reviewCard.innerHTML = `
+                    <h3>${firstName}, ${age}, ${town}</h3>
+                    <p>${review.reviewText}</p>
+                `;
+
+                reviewList.appendChild(reviewCard);
+            });
+        }
+        function calculateAge(dateOfBirth) {
+                const today = new Date();
+                const birthDate = new Date(dateOfBirth);
+                let age = today.getFullYear() - birthDate.getFullYear();
+                const monthDiff = today.getMonth() - birthDate.getMonth();
+
+                if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+                    age--;
+                }
+
+                return age;
+            }
 
     loadFeaturedCars();
+    loadReviews();
 });
