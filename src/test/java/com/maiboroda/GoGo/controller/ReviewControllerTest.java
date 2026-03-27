@@ -24,7 +24,7 @@ public class ReviewControllerTest extends AbstractIntegrationTest {
     private MockMvc mockMvc;
 
     @Test
-    public void returnLastReviews() throws Exception {
+    void returnLastReviews() throws Exception {
         mockMvc.perform(get("/api/reviews"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(4))
@@ -35,14 +35,14 @@ public class ReviewControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void returnAllReviews() throws Exception {
+    void returnAllReviews() throws Exception {
         mockMvc.perform(get("/api/reviews"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(4));
     }
 
     @Test
-    public void returnRandomReview () throws Exception {
+    void returnRandomReview () throws Exception {
         mockMvc.perform(get("/api/reviews/random"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json"))
