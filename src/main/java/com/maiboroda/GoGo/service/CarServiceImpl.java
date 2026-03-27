@@ -27,8 +27,8 @@ public class CarServiceImpl implements CarService {
     private final CarMapper carMapper;
     private final CountryService countryService;
 
-    @Value("${gogo.settings.random-number-car}")
-    private int randomNumberCar;
+    @Value("${gogo.settings.random-number}")
+    private int randomNumber;
 
     @Override
     @Transactional(readOnly = true)
@@ -42,11 +42,11 @@ public class CarServiceImpl implements CarService {
     @Transactional(readOnly = true)
     @Override
     public List<CarResponseDto> getRandomCars() {
-        if (randomNumberCar < 0) {
+        if (randomNumber <= 0) {
             throw new IllegalArgumentException("Invalid Number, it must be positive");
         }
-        List<Car> cars = carRepository.getRandomCars(randomNumberCar);
-        if (randomNumberCar > cars.size()) {
+        List<Car> cars = carRepository.getRandomCars(randomNumber);
+        if (randomNumber > cars.size()) {
             throw new IllegalArgumentException("Invalid Number, it must be from 1 to " + cars.size());
         }
         log.info("Successfully add {} random cars", cars.size());

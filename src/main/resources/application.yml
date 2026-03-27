@@ -29,5 +29,4 @@ application:
 
 gogo:
   settings:
-    random-number-car: 3
-    random-number-review: 4
+    random-number: 3

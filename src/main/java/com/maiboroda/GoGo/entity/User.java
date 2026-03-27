@@ -6,19 +6,15 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@Entity
 @Table(name = "users")
+@Entity
+@Setter
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class User {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -29,26 +25,18 @@ public class User {
     @Column(nullable = false, length = 55, name = "last_name")
     private String lastName;
 
-    @Column(nullable = true, length = 55, name = "middle_name")
+    @Column(nullable = false, length = 55, name = "middle_name")
     private String middleName;
 
-    @Column(nullable = true, name = "date_of_birth")
-    private LocalDate dateOfBirth;
-
-    @Column(nullable = false, length = 15, name = "driver_license_id")
-    private String driverLicenseId;
-
-    @Column(nullable = false, unique = true, length = 254)
+    @Column(nullable = false, unique = true)
     private String email;
 
-    @Column(nullable = false, length = 255)
+    @Column(nullable = false)
     private String password;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Review> reviewList = new ArrayList<>();
+    @Column(nullable = false, name = "passport_url")
+    private String passportUrl;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Address> addressList = new ArrayList<>();
     @ElementCollection(fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)
     private Set<Role> roles;

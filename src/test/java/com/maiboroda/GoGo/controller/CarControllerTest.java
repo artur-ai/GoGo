@@ -168,7 +168,7 @@ public class CarControllerTest extends AbstractIntegrationTest {
 
     @Test
     void testNegativeRandomValue() throws Exception {
-        ReflectionTestUtils.setField(carService, "randomNumberCar", -3);
+        ReflectionTestUtils.setField(carService, "randomNumber", -3);
 
         mockMvc.perform(get("/api/v1/cars/random"))
                 .andExpect(status().isBadRequest());
@@ -176,7 +176,7 @@ public class CarControllerTest extends AbstractIntegrationTest {
 
     @Test
     void testBiggerNumerValueThanCarsInDb() throws Exception {
-        ReflectionTestUtils.setField(carService, "randomNumberCar", 100);
+        ReflectionTestUtils.setField(carService, "randomNumber", 100);
 
         mockMvc.perform(get("/api/v1/cars/random"))
                 .andExpect(status().isBadRequest());
