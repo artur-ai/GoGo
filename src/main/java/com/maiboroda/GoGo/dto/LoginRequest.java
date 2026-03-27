@@ -22,7 +22,8 @@ public record LoginRequest(
         @NotBlank(message = "Password can not be empty")
         String password,
 
-        @NotBlank(message = "Passport can not be empty")
-        String passportUrl
+        @NotBlank(message = "Driver license ID can not be empty")
+        @Size(max = 15, message = "Driver license ID must be less than 15 characters")
+        String driverLicenseId
 ) {
 }

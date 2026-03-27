@@ -1,6 +1,5 @@
 package com.maiboroda.GoGo.controller;
 
-import com.github.database.rider.junit5.api.DBRider;
 import com.maiboroda.GoGo.AbstractIntegrationTest;
 import com.maiboroda.GoGo.dto.AuthenticationRequest;
 import com.maiboroda.GoGo.dto.CarRequestDto;
@@ -10,10 +9,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.math.BigDecimal;
@@ -25,10 +22,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@DBRider
-@ActiveProfiles("test")
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
-@AutoConfigureMockMvc
+@AutoConfigureMockMvc(addFilters = true)
 public class AuthControllerTest extends AbstractIntegrationTest {
 
     @Autowired
@@ -47,7 +41,7 @@ public class AuthControllerTest extends AbstractIntegrationTest {
         LoginRequest request = new LoginRequest(
                 "John", "Doe", "Mid",
                 "john@test.com", "password123",
-                "https://passport.url"
+                "DL123456789"
         );
 
         mockMvc.perform(post("/api/v1/auth/register")
@@ -63,7 +57,7 @@ public class AuthControllerTest extends AbstractIntegrationTest {
         LoginRequest request = new LoginRequest(
                 "John", "Doe", "Mid",
                 "john@test.com", "password123",
-                "https://passport.url"
+                "DL123456789"
         );
 
         mockMvc.perform(post("/api/v1/auth/register")
@@ -82,7 +76,7 @@ public class AuthControllerTest extends AbstractIntegrationTest {
         LoginRequest registerRequest = new LoginRequest(
                 "John", "Doe", "Mid",
                 "login@test.com", "password123",
-                "https://passport.url"
+                "DL123456789"
         );
         mockMvc.perform(post("/api/v1/auth/register")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -117,7 +111,7 @@ public class AuthControllerTest extends AbstractIntegrationTest {
         LoginRequest request = new LoginRequest(
                 "John", "Doe", "Mid",
                 "", "password123",
-                "https://passport.url"
+                "DL123456789"
         );
 
         mockMvc.perform(post("/api/v1/auth/register")
@@ -131,7 +125,7 @@ public class AuthControllerTest extends AbstractIntegrationTest {
         LoginRequest request = new LoginRequest(
                 "", "Doe", "Mid",
                 "john@test.com", "password123",
-                "https://passport.url"
+                "DL123456789"
         );
 
         mockMvc.perform(post("/api/v1/auth/register")
@@ -145,7 +139,7 @@ public class AuthControllerTest extends AbstractIntegrationTest {
         LoginRequest request = new LoginRequest(
                 "John", "", "Mid",
                 "john@test.com", "password123",
-                "https://passport.url"
+                "DL123456789"
         );
 
         mockMvc.perform(post("/api/v1/auth/register")
@@ -159,7 +153,7 @@ public class AuthControllerTest extends AbstractIntegrationTest {
         LoginRequest request = new LoginRequest(
                 "John", "Doe", "Mid",
                 "john@test.com", "",
-                "https://passport.url"
+                "DL123456789"
         );
 
         mockMvc.perform(post("/api/v1/auth/register")
@@ -169,7 +163,7 @@ public class AuthControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
-    void testRegister_EmptyPassport_ShouldReturn400() throws Exception {
+    void testRegister_EmptyDriverLicenseId_ShouldReturn400() throws Exception {
         LoginRequest request = new LoginRequest(
                 "John", "Doe", "Mid",
                 "john@test.com", "password123",
@@ -187,7 +181,7 @@ public class AuthControllerTest extends AbstractIntegrationTest {
         LoginRequest request = new LoginRequest(
                 "J".repeat(156), "Doe", "Mid",
                 "john@test.com", "password123",
-                "https://passport.url"
+                "DL123456789"
         );
 
         mockMvc.perform(post("/api/v1/auth/register")
@@ -200,7 +194,7 @@ public class AuthControllerTest extends AbstractIntegrationTest {
     void testRegister_ResponseContainsTokenAndFirstName() throws Exception {
         LoginRequest request = new LoginRequest("Anna", "Smith",
                 "Mid", "anna@test.com",
-                "securepass", "https://passport.url"
+                "securepass", "DL987654321"
         );
 
         mockMvc.perform(post("/api/v1/auth/register")
@@ -236,7 +230,7 @@ public class AuthControllerTest extends AbstractIntegrationTest {
         LoginRequest registerRequest = new LoginRequest(
                 "John", "Doe", "Mid",
                 "auth@test.com", "password123",
-                "https://passport.url"
+                "DL123456789"
         );
 
         String response = mockMvc.perform(post("/api/v1/auth/register")
