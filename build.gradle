@@ -20,7 +20,7 @@ ext {
     databaseRiderVersion = '1.44.0'
     mapstructVersion = '1.6.3'
     lombockMapStructVersion = '0.2.0'
-    lombokVersion = '1.18.42'
+    lombokVersion = '1.18.46'
     jacocoVersion = '0.8.14'
     JsonWebTokenVersion = '0.13.0'
 }
